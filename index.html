@@ -2968,7 +2968,7 @@ if(!window.store){const o=json;json=function(){if(CLOUD.cur){const n0=CLOUD.cur.
 
 
 /* ===== v172: static web app + each user's own cloud (Dropbox, Google Drive, OneDrive, Nextcloud/WebDAV) ===== */
-const PCC=Object.assign({dropbox:'',google:'',microsoft:''},window.PROCOST_CLOUD||{});
+const PCC=Object.assign({dropbox:'',google:'',microsoft:'',googleApiKey:'',googleAppId:'',googleFullAccess:false},window.PROCOST_CLOUD||{});
 function pccKey(p){let v=PCC[p]||'';try{v=v||localStorage.getItem('pcKey_'+p)||''}catch(e){}return String(v).trim()}
 const CLR=location.origin+location.pathname;
 const PNM={dav:'Nextcloud / WebDAV',dropbox:'Dropbox',google:'Google Drive',onedrive:'OneDrive'};
@@ -3021,7 +3021,7 @@ const ODV={
 /* --- Google Drive (drive.file: ProCOST sees only the files it created or opened) --- */
 const GDR={
  lib(){return new Promise((res,rej)=>{if(window.google&&google.accounts&&google.accounts.oauth2)return res();const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.onload=()=>res();s.onerror=()=>rej(new Error('Could not load Google sign-in.'));document.head.appendChild(s)})},
- async login(silent){await this.lib();const k=pccKey('google');await new Promise((res,rej)=>{const c=google.accounts.oauth2.initTokenClient({client_id:k,scope:'https://www.googleapis.com/auth/drive.file',prompt:silent?'':'select_account',callback:t=>{if(t.error){rej(new Error(t.error_description||t.error));return}tokSet('google',Object.assign(tokGet('google')||{},{a:t.access_token,x:Date.now()+(t.expires_in-60)*1000}));res()},error_callback:e=>rej(new Error(e&&e.message||'Google sign-in was cancelled.'))});c.requestAccessToken()});await this.who()},
+ async login(silent){await this.lib();const k=pccKey('google');await new Promise((res,rej)=>{const c=google.accounts.oauth2.initTokenClient({client_id:k,scope:PCC.googleFullAccess?'https://www.googleapis.com/auth/drive':'https://www.googleapis.com/auth/drive.file',prompt:silent?'':'select_account',callback:t=>{if(t.error){rej(new Error(t.error_description||t.error));return}tokSet('google',Object.assign(tokGet('google')||{},{a:t.access_token,x:Date.now()+(t.expires_in-60)*1000}));res()},error_callback:e=>rej(new Error(e&&e.message||'Google sign-in was cancelled.'))});c.requestAccessToken()});await this.who()},
  async tok(){const t=tokGet('google');if(t&&Date.now()<t.x)return t.a;throw new Error('LOGIN')},
  async g(path,opt){opt=opt||{};return fetch(path.startsWith('http')?path:'https://www.googleapis.com/drive/v3'+path,Object.assign({},opt,{headers:Object.assign({Authorization:'Bearer '+await this.tok()},opt.headers||{})}))},
  async who(){try{const j=await (await this.g('/about?fields=user(emailAddress,displayName)')).json();const t=tokGet('google');t.who=j.user&&(j.user.emailAddress||j.user.displayName)||'';tokSet('google',t)}catch(e){}},
@@ -3124,6 +3124,19 @@ clBrowse=async function(){const box=$('clbr');if(!box)return;const P=CLD.prov,S0
 QI.cloud.t='Cloud storage (open / save)';
 {const o=qatUpd;qatUpd=function(){o.apply(this,arguments);try{const q=$('pcqat');if(!q)return;const cb=q.querySelector('[data-c=cloud]');if(cb)cb.title=CLOUD.cur?(PNM[CLOUD.cur.prov]||'Cloud')+': '+CLOUD.cur.name:'Cloud storage (open / save)';const s=q.querySelector('[data-c=save]');if(s&&CLOUD.cur)s.title='Save to '+(PNM[CLOUD.cur.prov]||'cloud')+' – '+CLOUD.cur.name+' (Ctrl+S)'}catch(e){}}}
 {const b=$('mi_cloud');if(b)b.textContent='☁ Cloud storage (Dropbox, Google Drive, OneDrive, Nextcloud)…'}
+
+/* ===== v173: Google Drive file picker – open files ProCOST did not create (e.g. saved by the desktop app via Google Drive for desktop) ===== */
+function gKey(k){let v=PCC[k]||'';try{v=v||localStorage.getItem('pcKey_'+k)||''}catch(e){}return String(v).trim()}
+GDR.gapi=function(){return new Promise((res,rej)=>{if(window.google&&google.picker)return res();const go=()=>gapi.load('picker',{callback:res,onerror:()=>rej(new Error('Could not load the Google file picker.'))});if(window.gapi)return go();const s=document.createElement('script');s.src='https://apis.google.com/js/api.js';s.onload=go;s.onerror=()=>rej(new Error('Could not load the Google file picker.'));document.head.appendChild(s)})};
+GDR.pick=async function(){const key=gKey('googleApiKey'),app=gKey('googleAppId');if(!key)throw new Error('The Google file picker needs an API key (see CLOUD-SETUP.md).');let tok;try{tok=await this.tok()}catch(e){await this.login(true);tok=await this.tok()}await this.gapi();
+ return new Promise(res=>{const v=new google.picker.DocsView(google.picker.ViewId.DOCS).setIncludeFolders(true).setSelectFolderEnabled(false).setMode(google.picker.DocsViewMode.LIST);
+  const b=new google.picker.PickerBuilder().addView(v).setOAuthToken(tok).setDeveloperKey(key).setTitle('Choose a ProCOST file (.pcp or .pcl)').setCallback(d=>{const A=google.picker.Action;if(d.action==A.PICKED){const x=d.docs[0];res({id:x.id,name:x.name,parent:x.parentId||''})}else if(d.action==A.CANCEL)res(null)});if(app)b.setAppId(app);b.build().setVisible(true)})};
+{const o=clDlg;clDlg=function(){const r=o.apply(this,arguments);try{const dlg=$('cldlg');if(!dlg||CLD.prov!='google'||window.store||!pvReady('google')||!pvOn('google'))return r;const out=dlg.querySelector('#clout');if(!out)return r;
+  const has=!!gKey('googleApiKey'),b=document.createElement('button');b.className='sm p';b.textContent='📂 Browse my Google Drive…';b.title='Pick any ProCOST file in your Google Drive, e.g. one saved by the desktop app';out.before(b);
+  const note=document.createElement('p');note.className='n';note.style.margin='-4px 0 8px';note.innerHTML=has?'Files saved by the ProCOST desktop app (through Google Drive for desktop) or uploaded by hand are not listed below until you pick them once with <b>Browse my Google Drive</b>. After that ProCOST can open and save them.':'Files saved by the desktop app are not listed here. To open them, add a Google <b>API key</b> for the file picker (CLOUD-SETUP.md), or for testing: <a href="#" id="clgk">enter an API key on this device</a>.';
+  const row=out.parentElement;row.after(note);
+  b.onclick=async()=>{if(!has){$('msg').textContent='Add a Google API key first (see CLOUD-SETUP.md).';return}try{dlg.style.display='none';const it=await GDR.pick();dlg.style.display='';if(!it)return;if(!/\.(pcp|pcl|json)$/i.test(it.name)){$('msg').textContent='“'+it.name+'” is not a ProCOST file (.pcp or .pcl).';return}dlg.remove();CLD.cur=it.parent||'__home';await clOpen({id:it.id,name:it.name,ver:''},'google')}catch(e){dlg.style.display='';$('msg').textContent=e.message||e}};
+  const gk=dlg.querySelector('#clgk');if(gk)gk.onclick=e=>{e.preventDefault();const k=prompt0('Google API key (for the file picker)');if(!k)return;const a=prompt0('Google Cloud project number (optional, from the project dashboard)')||'';try{localStorage.setItem('pcKey_googleApiKey',k.trim());if(a.trim())localStorage.setItem('pcKey_googleAppId',a.trim())}catch(x){}clDlg(CLD.mode)}}catch(e){console.error(e)}return r}}
 
 /* first render after every module has loaded (avoids rendering the full rate table with the old renderer) */
 if(window.__boot0){window.__boot0=0;try{tab(0)}catch(e){console.error(e)}}
