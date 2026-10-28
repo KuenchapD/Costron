@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
+<script>/* cloud sign-in pop-up: hand the result back to ProCOST and close */(function(){try{var q=location.search;if(window.opener&&window.opener!==window&&/[?&]state=/.test(q)&&/[?&](code|error)=/.test(q)){window.opener.postMessage({pcAuth:1,search:q},location.origin);document.write("<p style=\"font:14px system-ui;padding:20px\">Signed in – you can close this window.</p>");setTimeout(function(){window.close()},300);window.stop&&window.stop()}}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ProCOST</title><link rel="icon" type="image/png" href="icon.png"><meta name="description" content="ProCOST – Project Costing, Optimisation, Scheduling & Tracking">
+<title>ProCOST</title><link rel="icon" type="image/png" href="icon.png"><meta name="description" content="ProCOST – Project Costing, Optimisation, Scheduling & Tracking"><script src="config.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -2877,6 +2878,252 @@ setTimeout(qatDraw,0);setTimeout(qatDraw,700);
 
 /* web: open / save project in the ⋮ menu */
 (function(){if(window.store)return;const m=$('mnu');if(!m||$('mi_open'))return;const w=document.createElement('div');w.innerHTML='<button class="mi" id="mi_open" onclick="tm();$(\'imp\').click()">📂 Open project (.pcp)…</button><button class="mi" id="mi_save" onclick="tm();json()">💾 Save project (.pcp)</button>';m.prepend(...w.children)})();
+
+
+/* ===== v171: own server (Nextcloud / WebDAV) – open and save project files on the server ===== */
+const CLOUD={cfg:null,pass:null,cur:null,auto:false,t:null,busy:0};
+function clLoad(){try{CLOUD.cfg=JSON.parse(localStorage.getItem('pcCloud')||'null')}catch(e){}if(!CLOUD.cfg)CLOUD.cfg={kind:'nc',url:'',user:'',folder:'ProCOST',remember:true};try{CLOUD.pass=CLOUD.cfg.remember?(localStorage.getItem('pcCloudP')||null):(sessionStorage.getItem('pcCloudP')||null)}catch(e){}
+ try{CLOUD.cur=JSON.parse(localStorage.getItem('pcCloudCur')||'null')}catch(e){}try{CLOUD.auto=localStorage.getItem('pcCloudAuto')==='1'}catch(e){}}
+function clSaveCfg(){try{localStorage.setItem('pcCloud',JSON.stringify(CLOUD.cfg));if(CLOUD.cfg.remember){localStorage.setItem('pcCloudP',CLOUD.pass||'');sessionStorage.removeItem('pcCloudP')}else{sessionStorage.setItem('pcCloudP',CLOUD.pass||'');localStorage.removeItem('pcCloudP')}}catch(e){}}
+function clSetCur(c){CLOUD.cur=c;try{c?localStorage.setItem('pcCloudCur',JSON.stringify(c)):localStorage.removeItem('pcCloudCur')}catch(e){}try{if(window.store&&store.cloudDoc){store.cloudDoc(c?c.name:null,true);if(window.__pcRebase)__pcRebase(600)}}catch(e){}qatUpd()}
+clLoad();if(window.store)clSetCur(null);
+function clOk(){const c=CLOUD.cfg;return!!(c&&c.url&&(c.kind=='dav'||c.user))}
+function clEnc(p){return String(p||'').split('/').filter(Boolean).map(encodeURIComponent).join('/')}
+function clRoot(){const c=CLOUD.cfg,u=String(c.url||'').trim().replace(/\/+$/,'');if(c.kind=='dav')return u+'/';return u+'/remote.php/dav/files/'+encodeURIComponent(c.user)+'/'}
+function clHome(){const f=clEnc(CLOUD.cfg.folder);return clRoot()+(f?f+'/':'')}
+async function davReq(method,url,opt){opt=opt||{};const h=Object.assign({},opt.headers||{});const c=CLOUD.cfg;if(c.user||CLOUD.pass)h.Authorization='Basic '+btoa(unescape(encodeURIComponent((c.user||'')+':'+(CLOUD.pass||''))));
+ if(window.store&&store.dav)return await store.dav({method,url,headers:h,body:opt.body==null?null:String(opt.body)});
+ let r;try{r=await fetch(url,{method,headers:h,body:opt.body,credentials:'omit',cache:'no-store'})}catch(e){throw new Error('Could not reach the server. If ProCOST is not hosted on the same server as your files, the server must allow it (CORS) – see SERVER-SETUP in the package. ('+(e.message||e)+')')}
+ return{status:r.status,etag:r.headers.get('OC-ETag')||r.headers.get('ETag')||'',text:await r.text()}}
+function davErr(r,what){if(r.status==401)return'Server refused the user name or password (401). Use a Nextcloud app password.';if(r.status==403)return'No permission to '+what+' (403).';if(r.status==404)return'Not found on the server (404).';if(r.status==412)return'The file was changed on the server by someone else (412).';return'Server error '+r.status+' while trying to '+what+'.'}
+async function davList(dir){const r=await davReq('PROPFIND',dir,{headers:{Depth:'1','Content-Type':'application/xml; charset=utf-8'},body:'<?xml version="1.0"?><d:propfind xmlns:d="DAV:"><d:prop><d:resourcetype/><d:getcontentlength/><d:getlastmodified/><d:getetag/></d:prop></d:propfind>'});
+ if(r.status==404)return null;if(r.status!=207&&r.status!=200)throw new Error(davErr(r,'list the folder'));const x=new DOMParser().parseFromString(r.text,'application/xml'),T=(e,n)=>{const z=e.getElementsByTagNameNS('*',n)[0];return z?z.textContent:''},self=new URL(dir).pathname.replace(/\/+$/,'');
+ return[...x.getElementsByTagNameNS('*','response')].map(e=>{const href=T(e,'href'),p=decodeURIComponent(new URL(href,dir).pathname).replace(/\/+$/,'');return{href:new URL(href,dir).href,path:p,name:p.split('/').pop(),dir:e.getElementsByTagNameNS('*','collection').length>0,size:+T(e,'getcontentlength')||0,mod:T(e,'getlastmodified'),etag:T(e,'getetag')}}).filter(o=>o.path!==decodeURIComponent(self))}
+async function davEnsure(dir){const L=await davList(dir).catch(()=>null);if(L)return;const root=clRoot(),rel=dir.slice(root.length).split('/').filter(Boolean);let u=root;for(const p of rel){u+=p+'/';const r=await davReq('MKCOL',u);if(![201,405,301].includes(r.status)&&r.status>=400)throw new Error(davErr(r,'create the folder'))}}
+function clData(){let st=null;try{if(window.__getState)st=window.__getState()}catch(e){}if(st&&typeof st.then=='function')st=null;const o=st?JSON.parse(st):JSON.parse(JSON.stringify(S));return JSON.stringify(Object.assign({app:'procost',v:5},o),null,1)}
+async function clPut(url,name,etag,quiet){const body=clData();const h={'Content-Type':'application/octet-stream'};if(etag)h['If-Match']=etag;let r=await davReq('PUT',url,{headers:h,body});
+ if(r.status==412&&!quiet){return new Promise(res=>ask('“'+name+'” was changed on the server since you opened it (by another device or person). Overwrite it with your version?',['Overwrite','Save as a copy'],async k=>{if(k==0){r=await davReq('PUT',url,{headers:{'Content-Type':'application/octet-stream'},body});res(await clAfterPut(r,url,name))}else{clDlg('save',name.replace(/\.pcp$/i,'')+' (copy).pcp');res(false)}}))}
+ if(r.status==412&&quiet){$('msg').textContent='AutoSave paused: “'+name+'” was changed on the server. Press Save to decide.';return false}
+ return clAfterPut(r,url,name)}
+async function clAfterPut(r,url,name){if(r.status>=400){$('msg').textContent=davErr(r,'save the file');return false}let et=r.etag;if(!et){try{const L=await davReq('PROPFIND',url,{headers:{Depth:'0'},body:'<?xml version="1.0"?><d:propfind xmlns:d="DAV:"><d:prop><d:getetag/></d:prop></d:propfind>'});const m=/getetag>([^<]*)</i.exec(L.text);if(m)et=m[1].replace(/&quot;/g,'"')}catch(e){}}
+ clSetCur({href:url,name,etag:et,at:Date.now()});try{if(window.store&&store.cloudClean)store.cloudClean()}catch(e){}const tm=new Date();$('msg').textContent='Saved to server: '+name+' ('+String(tm.getHours()).padStart(2,'0')+':'+String(tm.getMinutes()).padStart(2,'0')+')';return true}
+window.cloudSave=async function(as){clLoad0();if(!clOk()||!CLOUD.pass&&CLOUD.cfg.kind=='nc'){clDlg('save');return false}if(as||!CLOUD.cur){clDlg('save');return false}return clPut(CLOUD.cur.href,CLOUD.cur.name,CLOUD.cur.etag,false)};
+function clLoad0(){if(!CLOUD.cfg)clLoad()}
+async function clOpen(it){const r=await davReq('GET',it.href);if(r.status>=400){$('msg').textContent=davErr(r,'open the file');return}const t=r.text;let j=null;try{j=JSON.parse(t)}catch(e){$('msg').textContent='That file is not a ProCOST file.';return}
+ if(/\.pcl$/i.test(it.name)){const inp=$('lbi');if(inp){const dt_=new DataTransfer();dt_.items.add(new File([t],it.name,{type:'application/json'}));inp.files=dt_.files;inp.dispatchEvent(new Event('change',{bubbles:true}))}return}
+ if(j&&j.type=='shared'){try{shOpenDesk(t,it.name)}catch(e){console.error(e)}return}
+ const oa=ask;ask=function(m,o,cb){ask=oa;return oa(m,o,k=>{cb(k);if(k==0){clSetCur({href:it.href,name:it.name,etag:r.etag||it.etag,at:Date.now()});$('msg').textContent='Opened from server: '+it.name}})};
+ impJ({files:[new File([t],it.name,{type:'application/json'})],value:''})}
+/* dialog: connection + file browser */
+let CLD={dir:null,mode:'open'};
+function clDlg(mode,fname){clLoad0();CLD.mode=mode||'open';let o=$('cldlg');if(o)o.remove();o=document.createElement('div');o.id='cldlg';o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:90;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto';
+ const c=CLOUD.cfg,nm=fname||(CLOUD.cur?CLOUD.cur.name:(pcName()+'.pcp'));
+ o.innerHTML=`<div class="c" style="max-width:780px;width:100%;margin:0"><h2 style="margin-top:0">☁ Server files <span class="row" style="margin:0"><button class="sm" id="clx">✕ Close</button></span></h2>
+ <details id="clset" ${clOk()&&CLOUD.pass!=null?'':'open'} style="border:1px solid var(--bd);border-radius:10px;padding:8px 12px;margin-bottom:10px"><summary style="cursor:pointer;font-weight:600">Connection ${clOk()?'— '+esc(c.kind=='nc'?(c.user+' @ '+c.url.replace(/^https?:\/\//,'')):c.url):''}</summary>
+  <div class="g" style="margin-top:8px"><div><label>Server type</label><select id="clk"><option value="nc" ${c.kind=='nc'?'selected':''}>Nextcloud / ownCloud</option><option value="dav" ${c.kind=='dav'?'selected':''}>Other WebDAV (full folder URL)</option></select></div>
+  <div style="grid-column:span 2"><label id="clul">${c.kind=='dav'?'WebDAV folder URL':'Server address'}</label><input id="clu" value="${esc(c.url)}" placeholder="${c.kind=='dav'?'https://myserver.com/dav/procost/':'https://cloud.example.com'}"></div>
+  <div><label>User name</label><input id="clus" value="${esc(c.user)}" autocomplete="username"></div><div><label>App password</label><input id="clp" type="password" value="${esc(CLOUD.pass||'')}" autocomplete="current-password" placeholder="Nextcloud → Settings → Security → App password"></div>
+  <div id="clfw"><label>Folder for ProCOST files</label><input id="clf" value="${esc(c.folder||'')}" placeholder="ProCOST"></div></div>
+  <label style="display:flex;gap:6px;align-items:center;margin-top:6px"><input type="checkbox" id="clr" style="width:auto" ${c.remember?'checked':''}> Remember the password on this device</label>
+  <div class="row" style="margin-top:8px"><button class="p sm" id="clc">Connect</button><button class="sm" id="cldis">Forget connection</button><span class="n" id="clst"></span></div>
+  <p class="n" style="margin:6px 0 0">Use a Nextcloud <b>app password</b> (Settings → Security → Devices &amp; sessions → Create new app password) rather than your login password – you can revoke it any time.</p></details>
+ <div id="clbr"></div>
+ <div id="clsv" style="border-top:1px solid var(--bd);margin-top:10px;padding-top:10px"><label>Save the current project to this folder as</label><div class="row" style="margin:0"><input id="cln" value="${esc(nm)}" style="flex:1;min-width:200px"><button class="p" id="clsb">☁ Save here</button></div>
+ ${CLOUD.cur?`<p class="n" style="margin:6px 0 0">Open server file: <b>${esc(CLOUD.cur.name)}</b>. Save (Ctrl+S) and AutoSave write back to it.</p>`:''}</div></div>`;
+ document.body.appendChild(o);const q=s=>o.querySelector(s);
+ q('#clx').onclick=()=>o.remove();q('#clk').onchange=()=>{const d=q('#clk').value=='dav';q('#clul').textContent=d?'WebDAV folder URL':'Server address';q('#clfw').style.display=d?'none':''};q('#clk').onchange();
+ const read=()=>{c.kind=q('#clk').value;c.url=q('#clu').value.trim();c.user=q('#clus').value.trim();c.folder=q('#clf').value.trim();c.remember=q('#clr').checked;CLOUD.pass=q('#clp').value;clSaveCfg()};
+ q('#clc').onclick=async()=>{read();if(!clOk()){q('#clst').textContent='Enter the server address and user name.';return}q('#clst').textContent='Connecting…';try{await davEnsure(clHome());q('#clst').textContent='✓ Connected';q('#clset').open=false;CLD.dir=clHome();clBrowse()}catch(e){q('#clst').innerHTML='<span style="color:#d92d20">'+esc(e.message||e)+'</span>'}};
+ q('#cldis').onclick=()=>{CLOUD.pass=null;CLOUD.cfg={kind:'nc',url:'',user:'',folder:'ProCOST',remember:true};clSaveCfg();try{localStorage.removeItem('pcCloudP');localStorage.removeItem('pcCloud')}catch(e){}clSetCur(null);o.remove();$('msg').textContent='Server connection removed from this device.'};
+ q('#clsb').onclick=async()=>{read();let n0=q('#cln').value.trim().replace(/[\\/:*?"<>|]+/g,' ');if(!n0)return;if(!/\.pcp$/i.test(n0))n0+='.pcp';const dir=CLD.dir||clHome();try{await davEnsure(dir)}catch(e){$('msg').textContent=e.message||e;return}
+  const url=dir+encodeURIComponent(n0);let L=[];try{L=await davList(dir)||[]}catch(e){}const ex=L.find(x=>!x.dir&&x.name==n0);const go=async()=>{if(await clPut(url,n0,null,true)){o.remove()}};
+  if(ex&&!(CLOUD.cur&&CLOUD.cur.href==url))ask('“'+n0+'” already exists in this folder. Replace it?',['Replace'],go);else go()};
+ if(clOk()&&(CLOUD.pass!=null||c.kind=='dav')){CLD.dir=CLD.dir&&CLD.dir.startsWith(clRoot())?CLD.dir:clHome();clBrowse()}else q('#clbr').innerHTML='<p class="n">Connect to your server to see your files.</p>'}
+async function clBrowse(){const box=$('clbr');if(!box)return;const dir=CLD.dir||clHome(),root=clRoot();box.innerHTML='<p class="n">Loading…</p>';let L;try{L=await davList(dir)}catch(e){box.innerHTML='<p style="color:#d92d20">'+esc(e.message||e)+'</p>';return}
+ if(L==null){box.innerHTML='<p class="n">This folder does not exist yet – it is created when you save.</p>';return}
+ const rel=decodeURIComponent(dir.slice(root.length)).replace(/\/$/,''),parts=rel?rel.split('/'):[],crumb=['<a href="#" data-d="'+esc(root)+'">Home</a>'].concat(parts.map((p,i)=>'<a href="#" data-d="'+esc(root+parts.slice(0,i+1).map(encodeURIComponent).join('/')+'/')+'">'+esc(p)+'</a>')).join(' / ');
+ const F=L.filter(x=>x.dir).sort((a,b)=>a.name.localeCompare(b.name)),G=L.filter(x=>!x.dir&&/\.(pcp|pcl|json)$/i.test(x.name)).sort((a,b)=>new Date(b.mod)-new Date(a.mod)),fmt=d=>{const t=new Date(d);return isNaN(t)?'':dmyS(t.toISOString().slice(0,10))+' '+String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0')},kb=b=>b>1e6?(b/1e6).toFixed(1)+' MB':Math.max(1,Math.round(b/1e3))+' KB';
+ box.innerHTML=`<div class="row" style="align-items:center;margin:0 0 6px"><div style="flex:1">📁 ${crumb}</div><button class="sm" id="clnf">+ New folder</button><button class="sm" id="clrf">↻ Refresh</button></div>
+ <div style="border:1px solid var(--bd);border-radius:10px;max-height:46vh;overflow:auto"><table style="margin:0;min-width:0"><tr><th>Name</th><th>Modified</th><th class="num">Size</th><th></th></tr>
+ ${F.map(x=>`<tr><td colspan="3"><a href="#" data-d="${esc(x.href.replace(/\/?$/,'/'))}">📁 ${esc(x.name)}</a></td><td></td></tr>`).join('')}
+ ${G.map((x,i)=>`<tr${CLOUD.cur&&CLOUD.cur.href==x.href?' style="background:var(--ac2)"':''}><td>${/\.pcl$/i.test(x.name)?'📚':'📄'} ${esc(x.name)}</td><td>${fmt(x.mod)}</td><td class="num">${kb(x.size)}</td><td style="white-space:nowrap"><button class="sm p" data-o="${i}">${/\.pcl$/i.test(x.name)?'Load library':'Open'}</button> <button class="sm" data-n="${i}" title="Use this name to save">Use name</button></td></tr>`).join('')}
+ ${!F.length&&!G.length?'<tr><td colspan="4" class="n">No ProCOST files in this folder yet.</td></tr>':''}</table></div>`;
+ box.querySelectorAll('[data-d]').forEach(a=>a.onclick=e=>{e.preventDefault();CLD.dir=a.dataset.d;clBrowse()});
+ box.querySelectorAll('[data-o]').forEach(b=>b.onclick=async()=>{const it=G[+b.dataset.o];$('cldlg').remove();await clOpen(it)});
+ box.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const i=$('cln');if(i)i.value=G[+b.dataset.n].name});
+ $('clrf').onclick=clBrowse;$('clnf').onclick=()=>{const w=prompt0('New folder name');if(!w)return;const u=dir+encodeURIComponent(w.trim())+'/';davReq('MKCOL',u).then(r=>{if(r.status>=400&&r.status!=405)$('msg').textContent=davErr(r,'create the folder');CLD.dir=u;clBrowse()})}}
+function prompt0(t){try{return window.prompt(t)}catch(e){return null}}
+/* AutoSave to the server (web and desktop when a server file is open) */
+{const o=sv;sv=function(){const r=o.apply(this,arguments);try{if(!window.store&&CLOUD.auto&&CLOUD.cur&&!CLOUD.busy){if(CLOUD.t)clearTimeout(CLOUD.t);CLOUD.t=setTimeout(async()=>{CLOUD.t=null;CLOUD.busy=1;try{await clPut(CLOUD.cur.href,CLOUD.cur.name,CLOUD.cur.etag,true)}finally{CLOUD.busy=0}},3000)}}catch(e){}return r}}
+/* toolbar + menu wiring */
+Object.assign(QI,{cloud:{t:'Server files (open / save)',i:'<path d="M7 18h10a4 4 0 0 0 .5-8 6 6 0 0 0-11.5-1A4.5 4.5 0 0 0 7 18z"/>'}});QI.auto.desk=0;
+{const keys=Object.keys(QI),ord=['auto','save','undo','redo','cloud','new','open','saveAs','share','hist','nav','start'];const N={};ord.forEach(k=>{if(QI[k])N[k]=QI[k]});keys.forEach(k=>{if(!N[k])N[k]=QI[k]});Object.keys(QI).forEach(k=>delete QI[k]);Object.assign(QI,N)}
+{const o=qatRun;qatRun=async function(c){if(c=='cloud')return clDlg('open');if(!window.store){if(c=='save'&&CLOUD.cur)return cloudSave(false);if(c=='auto'){if(!CLOUD.cur){$('msg').textContent='AutoSave works for projects opened from or saved to your server (☁ Server files). In the browser, your work is always kept on this device.';clDlg('save');return}CLOUD.auto=!CLOUD.auto;try{localStorage.setItem('pcCloudAuto',CLOUD.auto?'1':'0')}catch(e){}qatUpd();$('msg').textContent='AutoSave to server '+(CLOUD.auto?'on':'off')+'.';return}}return o.apply(this,arguments)}}
+{const o=qatUpd;qatUpd=function(){o.apply(this,arguments);try{const q=$('pcqat');if(!q)return;if(!window.store){const a=q.querySelector('[data-c=auto]');if(a){a.classList.toggle('on',!!(CLOUD.auto&&CLOUD.cur));a.title=CLOUD.cur?('AutoSave to server '+(CLOUD.auto?'on':'off')+' – '+CLOUD.cur.name):'AutoSave to server (open or save a project on your server first)'}}const cb=q.querySelector('[data-c=cloud]');if(cb){cb.title=CLOUD.cur?'Server file: '+CLOUD.cur.name:'Server files (open / save)';cb.style.color=CLOUD.cur?'#0f6cbd':''}const s=q.querySelector('[data-c=save]');if(s)s.title=CLOUD.cur?'Save to server – '+CLOUD.cur.name+' (Ctrl+S)':'Save (Ctrl+S)'}catch(e){}}}
+QDEF.length=0;(window.store?['auto','save','undo','redo','cloud']:['open','cloud','save','undo','redo']).forEach(x=>QDEF.push(x));
+(function(){const m=$('mnu');if(!m||$('mi_cloud'))return;const w=document.createElement('div');w.innerHTML='<button class="mi" id="mi_cloud" onclick="tm();clDlg(\'open\')">☁ Server files (Nextcloud / WebDAV)…</button>';const after=$('mi_save');if(after)after.after(...w.children);else m.prepend(...w.children)})();
+setTimeout(()=>{try{qatDraw()}catch(e){}},800);
+if(!window.store){const o=json;json=function(){if(CLOUD.cur){const n0=CLOUD.cur.name;return ask('This project is open from your server ('+n0+'). Save it to the server, or download a copy to this computer?',['Save to server','Download a copy'],k=>{k==0?cloudSave(false):o.apply(this,[])})}return o.apply(this,arguments)}}
+(function(){const inp=$('imp');if(!inp)return;inp.addEventListener('change',()=>{if(!inp.files||!inp.files[0])return;const oa=ask;let done=0;ask=function(m,o,cb){done=1;ask=oa;return oa(m,o,k=>{cb(k);if(k==0)clSetCur(null)})};setTimeout(()=>{if(!done&&ask!==oa)ask=oa},8000)},true)})();
+
+
+/* ===== v172: static web app + each user's own cloud (Dropbox, Google Drive, OneDrive, Nextcloud/WebDAV) ===== */
+const PCC=Object.assign({dropbox:'',google:'',microsoft:''},window.PROCOST_CLOUD||{});
+function pccKey(p){let v=PCC[p]||'';try{v=v||localStorage.getItem('pcKey_'+p)||''}catch(e){}return String(v).trim()}
+const CLR=location.origin+location.pathname;
+const PNM={dav:'Nextcloud / WebDAV',dropbox:'Dropbox',google:'Google Drive',onedrive:'OneDrive'};
+/* tokens */
+function tokGet(p){try{return JSON.parse(localStorage.getItem('pcTok_'+p)||'null')}catch(e){return null}}
+function tokSet(p,t){try{t?localStorage.setItem('pcTok_'+p,JSON.stringify(t)):localStorage.removeItem('pcTok_'+p)}catch(e){}}
+const b64u=a=>btoa(String.fromCharCode(...new Uint8Array(a))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+async function pkce(){const v=b64u(crypto.getRandomValues(new Uint8Array(48)));const c=b64u(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v)));return{v,c,st:b64u(crypto.getRandomValues(new Uint8Array(16)))}}
+function authPopup(url,state){return new Promise((res,rej)=>{const w=window.open(url,'pcauth','width=520,height=680');if(!w){rej(new Error('The sign-in window was blocked. Allow pop-ups for this site and try again.'));return}
+ const on=e=>{if(e.origin!==location.origin||!e.data||!e.data.pcAuth)return;window.removeEventListener('message',on);clearInterval(iv);const q=new URLSearchParams(e.data.search||'');if(q.get('state')!==state){rej(new Error('Sign-in failed (state mismatch).'));return}if(q.get('error')){rej(new Error(q.get('error_description')||q.get('error')));return}res(q.get('code'))};
+ window.addEventListener('message',on);const iv=setInterval(()=>{if(w.closed){clearInterval(iv);window.removeEventListener('message',on);rej(new Error('Sign-in window closed.'))}},700)})}
+async function formPost(url,obj){const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(obj).toString()});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error_description||j.error||('Sign-in error '+r.status));return j}
+/* --- Dropbox --- */
+const DBX={
+ async login(){const k=pccKey('dropbox'),P=await pkce();const u='https://www.dropbox.com/oauth2/authorize?'+new URLSearchParams({client_id:k,response_type:'code',code_challenge:P.c,code_challenge_method:'S256',redirect_uri:CLR,token_access_type:'offline',state:P.st});
+  const code=await authPopup(u,P.st);const j=await formPost('https://api.dropboxapi.com/oauth2/token',{code,grant_type:'authorization_code',client_id:k,redirect_uri:CLR,code_verifier:P.v});tokSet('dropbox',{a:j.access_token,r:j.refresh_token,x:Date.now()+(j.expires_in-60)*1000});await this.who()},
+ async tok(){const t=tokGet('dropbox');if(!t)throw new Error('LOGIN');if(Date.now()<t.x)return t.a;if(!t.r)throw new Error('LOGIN');const j=await formPost('https://api.dropboxapi.com/oauth2/token',{grant_type:'refresh_token',refresh_token:t.r,client_id:pccKey('dropbox')});t.a=j.access_token;t.x=Date.now()+(j.expires_in-60)*1000;tokSet('dropbox',t);return t.a},
+ arg:o=>JSON.stringify(o).replace(/[\u007f-￿]/g,c=>'\\u'+('000'+c.charCodeAt(0).toString(16)).slice(-4)),
+ async api(ep,body){const r=await fetch('https://api.dropboxapi.com/2/'+ep,{method:'POST',headers:{Authorization:'Bearer '+await this.tok(),'Content-Type':'application/json'},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(j.error_summary||('Dropbox error '+r.status));e.st=r.status;e.j=j;throw e}return j},
+ async who(){try{const r=await fetch('https://api.dropboxapi.com/2/users/get_current_account',{method:'POST',headers:{Authorization:'Bearer '+await this.tok()}});const j=await r.json();const t=tokGet('dropbox');t.who=j.email||(j.name&&j.name.display_name)||'';tokSet('dropbox',t)}catch(e){}},
+ root:()=>'',home:()=>'/ProCOST',
+ async list(f){let j;try{j=await this.api('files/list_folder',{path:f,limit:2000})}catch(e){if(e.j&&/not_found/.test(e.j.error_summary||''))return null;throw e}const L=j.entries.slice();while(j.has_more){j=await this.api('files/list_folder/continue',{cursor:j.cursor});L.push(...j.entries)}
+  return L.map(x=>({id:x.path_display,name:x.name,dir:x['.tag']=='folder',size:x.size||0,mod:x.server_modified||'',ver:x.rev||'',ref:x.path_display}))},
+ async ensure(f){if(!f)return;try{await this.api('files/create_folder_v2',{path:f,autorename:false})}catch(e){if(!(e.j&&/conflict/.test(e.j.error_summary||'')))throw e}},
+ async read(it){const r=await fetch('https://content.dropboxapi.com/2/files/download',{method:'POST',headers:{Authorization:'Bearer '+await this.tok(),'Dropbox-API-Arg':this.arg({path:it.id})}});if(!r.ok)throw new Error('Dropbox could not open the file ('+r.status+').');let ver='';try{ver=JSON.parse(r.headers.get('dropbox-api-result')||'{}').rev||''}catch(e){}return{text:await r.text(),ver}},
+ async write(f,name,text,ex){const path=ex&&ex.id?ex.id:(f+'/'+name),mode=ex&&ex.ver&&!ex.force?{'.tag':'update',update:ex.ver}:{'.tag':'overwrite'};
+  const r=await fetch('https://content.dropboxapi.com/2/files/upload',{method:'POST',headers:{Authorization:'Bearer '+await this.tok(),'Content-Type':'application/octet-stream','Dropbox-API-Arg':this.arg({path,mode,autorename:false,mute:true})},body:text});const j=await r.json().catch(()=>({}));
+  if(r.status==409&&/conflict/.test(j.error_summary||''))return{conflict:true};if(!r.ok)throw new Error(j.error_summary||('Dropbox could not save ('+r.status+').'));return{id:j.path_display,ver:j.rev}},
+ async mkdir(f,n){await this.ensure(f+'/'+n);return f+'/'+n},
+ sub:(f,it)=>it.id,logout(){tokSet('dropbox',null)}};
+/* --- OneDrive (Microsoft Graph) --- */
+const ODV={
+ sc:'offline_access User.Read Files.ReadWrite',
+ async login(){const k=pccKey('microsoft'),P=await pkce();const u='https://login.microsoftonline.com/common/oauth2/v2.0/authorize?'+new URLSearchParams({client_id:k,response_type:'code',redirect_uri:CLR,response_mode:'query',scope:this.sc,code_challenge:P.c,code_challenge_method:'S256',state:P.st,prompt:'select_account'});
+  const code=await authPopup(u,P.st);const j=await formPost('https://login.microsoftonline.com/common/oauth2/v2.0/token',{client_id:k,scope:this.sc,code,redirect_uri:CLR,grant_type:'authorization_code',code_verifier:P.v});tokSet('onedrive',{a:j.access_token,r:j.refresh_token,x:Date.now()+(j.expires_in-60)*1000});await this.who()},
+ async tok(){const t=tokGet('onedrive');if(!t)throw new Error('LOGIN');if(Date.now()<t.x)return t.a;if(!t.r)throw new Error('LOGIN');let j;try{j=await formPost('https://login.microsoftonline.com/common/oauth2/v2.0/token',{client_id:pccKey('microsoft'),scope:this.sc,refresh_token:t.r,grant_type:'refresh_token'})}catch(e){throw new Error('LOGIN')}t.a=j.access_token;if(j.refresh_token)t.r=j.refresh_token;t.x=Date.now()+(j.expires_in-60)*1000;tokSet('onedrive',t);return t.a},
+ async g(path,opt){opt=opt||{};const r=await fetch(path.startsWith('http')?path:'https://graph.microsoft.com/v1.0'+path,Object.assign({},opt,{headers:Object.assign({Authorization:'Bearer '+await this.tok()},opt.headers||{})}));return r},
+ enc:p=>p.split('/').filter(Boolean).map(encodeURIComponent).join('/'),
+ async who(){try{const j=await (await this.g('/me')).json();const t=tokGet('onedrive');t.who=j.userPrincipalName||j.mail||j.displayName||'';tokSet('onedrive',t)}catch(e){}},
+ root:()=>'',home:()=>'/ProCOST',
+ async list(f){let r=await this.g(f?'/me/drive/root:/'+this.enc(f)+':/children?$top=999':'/me/drive/root/children?$top=999');if(r.status==404)return null;if(!r.ok)throw new Error('OneDrive error '+r.status);let j=await r.json();const L=j.value.slice();while(j['@odata.nextLink']){j=await (await this.g(j['@odata.nextLink'])).json();L.push(...j.value)}
+  return L.map(x=>({id:x.id,name:x.name,dir:!!x.folder,size:x.size||0,mod:x.lastModifiedDateTime||'',ver:x.eTag||'',ref:(f||'')+'/'+x.name}))},
+ async ensure(f){if(!f)return;const parts=f.split('/').filter(Boolean);let cur='';for(const p of parts){const r=await this.g(cur?'/me/drive/root:/'+this.enc(cur)+':/children':'/me/drive/root/children',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:p,folder:{},'@microsoft.graph.conflictBehavior':'fail'})});if(!r.ok&&r.status!=409)throw new Error('OneDrive could not create the folder ('+r.status+').');cur+='/'+p}},
+ async read(it){const r=await this.g('/me/drive/items/'+it.id+'/content');if(!r.ok)throw new Error('OneDrive could not open the file ('+r.status+').');let ver=it.ver||'';try{const m=await (await this.g('/me/drive/items/'+it.id+'?$select=eTag')).json();ver=m.eTag||ver}catch(e){}return{text:await r.text(),ver}},
+ async write(f,name,text,ex){const big=text.length>3.5e6;let url,h={'Content-Type':'application/octet-stream'};if(ex&&ex.id){url='/me/drive/items/'+ex.id+(big?'/createUploadSession':'/content');if(ex.ver&&!ex.force)h['If-Match']=ex.ver}else url='/me/drive/root:/'+this.enc((f||'')+'/'+name)+(big?':/createUploadSession':':/content');
+  let r;if(!big)r=await this.g(url,{method:'PUT',headers:h,body:text});else{const s=await this.g(url,{method:'POST',headers:Object.assign({},h,{'Content-Type':'application/json'}),body:JSON.stringify({item:{'@microsoft.graph.conflictBehavior':'replace'}})});if(s.status==412)return{conflict:true};const sj=await s.json();const b=new TextEncoder().encode(text);r=await fetch(sj.uploadUrl,{method:'PUT',headers:{'Content-Range':'bytes 0-'+(b.length-1)+'/'+b.length},body:b})}
+  if(r.status==412)return{conflict:true};if(!r.ok)throw new Error('OneDrive could not save ('+r.status+').');const j=await r.json();return{id:j.id,ver:j.eTag}},
+ async mkdir(f,n){await this.ensure((f||'')+'/'+n);return(f||'')+'/'+n},
+ sub:(f,it)=>(f||'')+'/'+it.name,logout(){tokSet('onedrive',null)}};
+/* --- Google Drive (drive.file: ProCOST sees only the files it created or opened) --- */
+const GDR={
+ lib(){return new Promise((res,rej)=>{if(window.google&&google.accounts&&google.accounts.oauth2)return res();const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.onload=()=>res();s.onerror=()=>rej(new Error('Could not load Google sign-in.'));document.head.appendChild(s)})},
+ async login(silent){await this.lib();const k=pccKey('google');await new Promise((res,rej)=>{const c=google.accounts.oauth2.initTokenClient({client_id:k,scope:'https://www.googleapis.com/auth/drive.file',prompt:silent?'':'select_account',callback:t=>{if(t.error){rej(new Error(t.error_description||t.error));return}tokSet('google',Object.assign(tokGet('google')||{},{a:t.access_token,x:Date.now()+(t.expires_in-60)*1000}));res()},error_callback:e=>rej(new Error(e&&e.message||'Google sign-in was cancelled.'))});c.requestAccessToken()});await this.who()},
+ async tok(){const t=tokGet('google');if(t&&Date.now()<t.x)return t.a;throw new Error('LOGIN')},
+ async g(path,opt){opt=opt||{};return fetch(path.startsWith('http')?path:'https://www.googleapis.com/drive/v3'+path,Object.assign({},opt,{headers:Object.assign({Authorization:'Bearer '+await this.tok()},opt.headers||{})}))},
+ async who(){try{const j=await (await this.g('/about?fields=user(emailAddress,displayName)')).json();const t=tokGet('google');t.who=j.user&&(j.user.emailAddress||j.user.displayName)||'';tokSet('google',t)}catch(e){}},
+ root:()=>'root',
+ async homeId(){const t=tokGet('google')||{};if(t.home){const r=await this.g('/files/'+t.home+'?fields=id,trashed');if(r.ok){const j=await r.json();if(!j.trashed)return t.home}}const q=encodeURIComponent("name='ProCOST' and mimeType='application/vnd.google-apps.folder' and trashed=false and 'root' in parents");let j=await (await this.g('/files?q='+q+'&fields=files(id)')).json();let id=j.files&&j.files[0]&&j.files[0].id;
+  if(!id){const r=await this.g('/files?fields=id',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'ProCOST',mimeType:'application/vnd.google-apps.folder'})});id=(await r.json()).id}const t2=tokGet('google');t2.home=id;tokSet('google',t2);return id},
+ home:()=>'__home',
+ async list(f){if(f=='__home')f=await this.homeId();const q=encodeURIComponent("'"+f+"' in parents and trashed=false");const r=await this.g('/files?q='+q+'&pageSize=1000&fields=files(id,name,mimeType,modifiedTime,size,version)');if(r.status==404)return null;if(!r.ok)throw new Error('Google Drive error '+r.status);const j=await r.json();
+  return(j.files||[]).map(x=>({id:x.id,name:x.name,dir:x.mimeType=='application/vnd.google-apps.folder',size:+x.size||0,mod:x.modifiedTime||'',ver:x.version||'',ref:x.id}))},
+ async ensure(f){if(f=='__home')await this.homeId()},
+ async read(it){const r=await this.g('/files/'+it.id+'?alt=media');if(!r.ok)throw new Error('Google Drive could not open the file ('+r.status+').');let ver=it.ver||'';try{ver=(await (await this.g('/files/'+it.id+'?fields=version')).json()).version||ver}catch(e){}return{text:await r.text(),ver}},
+ async write(f,name,text,ex){if(f=='__home')f=await this.homeId();let r;if(ex&&ex.id){if(ex.ver&&!ex.force){const m=await (await this.g('/files/'+ex.id+'?fields=version')).json();if(m.version&&String(m.version)!==String(ex.ver))return{conflict:true}}
+   r=await this.g('https://www.googleapis.com/upload/drive/v3/files/'+ex.id+'?uploadType=media&fields=id,version',{method:'PATCH',headers:{'Content-Type':'application/octet-stream'},body:text})}
+  else{const bd='pc'+Math.random().toString(36).slice(2),body='--'+bd+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify({name,parents:[f]})+'\r\n--'+bd+'\r\nContent-Type: application/octet-stream\r\n\r\n'+text+'\r\n--'+bd+'--';
+   r=await this.g('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,version',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+bd},body})}
+  if(!r.ok)throw new Error('Google Drive could not save ('+r.status+').');const j=await r.json();return{id:j.id,ver:j.version}},
+ async mkdir(f,n){if(f=='__home')f=await this.homeId();const r=await this.g('/files?fields=id',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,mimeType:'application/vnd.google-apps.folder',parents:[f]})});return(await r.json()).id},
+ sub:(f,it)=>it.id,logout(){const t=tokGet('google');try{if(t&&window.google)google.accounts.oauth2.revoke(t.a,()=>{})}catch(e){}tokSet('google',null)}};
+/* --- Nextcloud / WebDAV wrapped as a provider --- */
+const DAVP={
+ root:()=>clRoot(),home:()=>clHome(),
+ async list(f){const L=await davList(f);return L&&L.map(x=>({id:x.href,name:x.name,dir:x.dir,size:x.size,mod:x.mod,ver:x.etag,ref:x.dir?x.href.replace(/\/?$/,'/'):x.href}))},
+ ensure:f=>davEnsure(f),
+ async read(it){const r=await davReq('GET',it.id);if(r.status>=400)throw new Error(davErr(r,'open the file'));return{text:r.text,ver:r.etag||it.ver}},
+ async write(f,name,text,ex){const url=ex&&ex.id?ex.id:f+encodeURIComponent(name),h={'Content-Type':'application/octet-stream'};if(ex&&ex.ver&&!ex.force)h['If-Match']=ex.ver;const r=await davReq('PUT',url,{headers:h,body:text});if(r.status==412)return{conflict:true};if(r.status>=400)throw new Error(davErr(r,'save the file'));
+  let et=r.etag;if(!et){try{const L=await davReq('PROPFIND',url,{headers:{Depth:'0'},body:'<?xml version="1.0"?><d:propfind xmlns:d="DAV:"><d:prop><d:getetag/></d:prop></d:propfind>'});const m=/getetag>([^<]*)</i.exec(L.text);if(m)et=m[1].replace(/&quot;/g,'"')}catch(e){}}return{id:url,ver:et}},
+ async mkdir(f,n){const u=f+encodeURIComponent(n)+'/';const r=await davReq('MKCOL',u);if(r.status>=400&&r.status!=405)throw new Error(davErr(r,'create the folder'));return u},
+ sub:(f,it)=>it.ref};
+const PROV={dav:DAVP,dropbox:DBX,google:GDR,onedrive:ODV},PKEY={dropbox:'dropbox',google:'google',onedrive:'microsoft'};
+function pvReady(p){return p=='dav'?clOk():!!pccKey(PKEY[p])}
+function pvOn(p){if(p=='dav')return clOk()&&(CLOUD.pass!=null||CLOUD.cfg.kind=='dav');const t=tokGet(p);return!!(t&&(t.r||Date.now()<t.x))}
+async function pvCall(p,fn){try{return await fn(PROV[p])}catch(e){if(e.message=='LOGIN'){if(p=='google'){try{await GDR.login(true);return await fn(PROV[p])}catch(e2){}}const er=new Error((PNM[p])+': please sign in again.');er.login=1;throw er}throw e}}
+/* current cloud file: {prov,id,folder,name,ver} */
+if(CLOUD.cur&&!CLOUD.cur.prov&&CLOUD.cur.href){const h=CLOUD.cur.href;CLOUD.cur={prov:'dav',id:h,folder:h.replace(/[^/]*$/,''),name:CLOUD.cur.name,ver:CLOUD.cur.etag};try{localStorage.setItem('pcCloudCur',JSON.stringify(CLOUD.cur))}catch(e){}}
+async function clWrite(target,quiet){const P=target.prov,text=clData();let r;try{r=await pvCall(P,pv=>pv.write(target.folder,target.name,text,target.id?{id:target.id,ver:target.ver,force:target.force}:null))}catch(e){$('msg').textContent=(quiet?'AutoSave: ':'')+(e.message||e);if(e.login&&!quiet)clDlg('save');return false}
+ if(r.conflict){if(quiet){$('msg').textContent='AutoSave paused: “'+target.name+'” was changed in '+PNM[P]+' by another device or person. Press Save to decide.';return false}
+  return new Promise(res=>ask('“'+target.name+'” was changed in '+PNM[P]+' since you opened it (by another device or person). Overwrite it with your version?',['Overwrite','Save as a copy'],async k=>{if(k==0)res(await clWrite(Object.assign({},target,{force:true}),false));else{CLD.prov=P;clDlg('save',target.name.replace(/\.pcp$/i,'')+' (copy).pcp');res(false)}}))}
+ clSetCur({prov:P,id:r.id,folder:target.folder,name:target.name,ver:r.ver,at:Date.now()});try{if(window.store&&store.cloudClean)store.cloudClean()}catch(e){}const tm=new Date();$('msg').textContent='Saved to '+PNM[P]+': '+target.name+' ('+String(tm.getHours()).padStart(2,'0')+':'+String(tm.getMinutes()).padStart(2,'0')+')';return true}
+clPut=function(_u,_n,_e,quiet){return CLOUD.cur?clWrite(CLOUD.cur,quiet):false};
+window.cloudSave=async function(as){if(as||!CLOUD.cur){clDlg('save');return false}return clWrite(CLOUD.cur,false)};
+clOpen=async function(it,P){P=P||'dav';let r;try{r=await pvCall(P,pv=>pv.read(it))}catch(e){$('msg').textContent=e.message||e;return}const t=r.text;let j=null;try{j=JSON.parse(t)}catch(e){$('msg').textContent='That file is not a ProCOST file.';return}
+ if(/\.pcl$/i.test(it.name)){const inp=$('lbi');if(inp){const dt_=new DataTransfer();dt_.items.add(new File([t],it.name,{type:'application/json'}));inp.files=dt_.files;inp.dispatchEvent(new Event('change',{bubbles:true}))}return}
+ if(j&&j.type=='shared'){try{shOpenDesk(t,it.name)}catch(e){console.error(e)}return}
+ const oa=ask;ask=function(m,o,cb){ask=oa;return oa(m,o,k=>{cb(k);if(k==0){clSetCur({prov:P,id:it.id,folder:CLD.cur||PROV[P].home(),name:it.name,ver:r.ver,at:Date.now()});$('msg').textContent='Opened from '+PNM[P]+': '+it.name}})};
+ impJ({files:[new File([t],it.name,{type:'application/json'})],value:''})};
+/* dialog */
+CLD.prov=CLD.prov||(function(){try{return localStorage.getItem('pcCloudProv')||'dav'}catch(e){return'dav'}})();
+clDlg=function(mode,fname){clLoad0();CLD.mode=mode||'open';if(CLOUD.cur&&CLOUD.cur.prov&&!CLD.__picked)CLD.prov=CLOUD.cur.prov;let o=$('cldlg');if(o)o.remove();o=document.createElement('div');o.id='cldlg';o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:90;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto';
+ const P=CLD.prov,c=CLOUD.cfg,nm=fname||(CLOUD.cur?CLOUD.cur.name:(pcName()+'.pcp')),D=!!window.store;
+ const tabs=Object.keys(PNM).map(k=>`<button class="sm${k==P?' p':''}" data-pv="${k}">${{dav:'🗄️',dropbox:'📦',google:'🟢',onedrive:'☁️'}[k]} ${PNM[k]}${pvOn(k)?' ✓':''}</button>`).join('');
+ let conn='';
+ if(P=='dav')conn=`<details id="clset" ${pvOn('dav')?'':'open'} style="border:1px solid var(--bd);border-radius:10px;padding:8px 12px;margin-bottom:10px"><summary style="cursor:pointer;font-weight:600">Connection ${clOk()?'— '+esc(c.kind=='nc'?(c.user+' @ '+c.url.replace(/^https?:\/\//,'')):c.url):''}</summary>
+  <div class="g" style="margin-top:8px"><div><label>Server type</label><select id="clk"><option value="nc" ${c.kind=='nc'?'selected':''}>Nextcloud / ownCloud</option><option value="dav" ${c.kind=='dav'?'selected':''}>Other WebDAV (full folder URL)</option></select></div>
+  <div style="grid-column:span 2"><label id="clul">${c.kind=='dav'?'WebDAV folder URL':'Server address'}</label><input id="clu" value="${esc(c.url)}" placeholder="${c.kind=='dav'?'https://myserver.com/dav/procost/':'https://cloud.example.com'}"></div>
+  <div><label>User name</label><input id="clus" value="${esc(c.user)}" autocomplete="username"></div><div><label>App password</label><input id="clp" type="password" value="${esc(CLOUD.pass||'')}" autocomplete="current-password" placeholder="Nextcloud → Settings → Security → App password"></div>
+  <div id="clfw"><label>Folder for ProCOST files</label><input id="clf" value="${esc(c.folder||'')}" placeholder="ProCOST"></div></div>
+  <label style="display:flex;gap:6px;align-items:center;margin-top:6px"><input type="checkbox" id="clr" style="width:auto" ${c.remember?'checked':''}> Remember the password on this device</label>
+  <div class="row" style="margin-top:8px"><button class="p sm" id="clc">Connect</button><button class="sm" id="cldis">Forget connection</button><span class="n" id="clst"></span></div>
+  <p class="n" style="margin:6px 0 0">Use a Nextcloud <b>app password</b> (Settings → Security → Devices &amp; sessions). ${D?'':'In the web app the server must allow this site (same address or CORS) – see SERVER-SETUP.'}</p></details>`;
+ else if(D)conn=`<div style="border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:10px"><b>${PNM[P]} on the desktop</b><p class="n" style="margin:6px 0 0">Install the ${PNM[P]} app for ${navigator.platform&&/mac/i.test(navigator.platform)?'Mac':'Windows'} and sign in. It adds a ${PNM[P]} folder on your computer that syncs automatically. Use <b>File → Save As</b> to save your project into that folder and <b>File → Open</b> to open it – AutoSave works as usual. Signing in to ${PNM[P]} directly is available in the web version of ProCOST.</p></div>`;
+ else if(!pvReady(P))conn=`<div style="border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:10px"><b>${PNM[P]} is not set up on this site yet.</b><p class="n" style="margin:6px 0">The site owner registers ProCOST once with ${PNM[P]} and adds the app's client ID to <code>config.js</code> (see CLOUD-SETUP.md). Each user then signs in with their own ${PNM[P]} account.</p><details><summary class="n" style="cursor:pointer">I have a client ID – use it on this device for testing</summary><div class="row" style="margin-top:6px"><input id="clkey" placeholder="${P=='dropbox'?'Dropbox app key':P=='google'?'Google OAuth client ID':'Microsoft application (client) ID'}" style="flex:1"><button class="sm p" id="clkeys">Save</button></div><p class="n" style="margin:4px 0 0">Redirect / authorised origin to register: <code>${esc(CLR)}</code></p></details></div>`;
+ else{const t=tokGet(P);conn=`<div class="row" style="align-items:center;border:1px solid var(--bd);border-radius:10px;padding:8px 12px;margin:0 0 10px">${pvOn(P)?`<span>✓ Signed in${t&&t.who?' as <b>'+esc(t.who)+'</b>':''}</span><span style="flex:1"></span><button class="sm" id="clout">Sign out</button>`:`<span class="n">Sign in with your own ${PNM[P]} account. ProCOST keeps your projects in a <b>ProCOST</b> folder${P=='google'?' and can only see files it created':''}.</span><span style="flex:1"></span><button class="p" id="clin">Sign in to ${PNM[P]}</button>`}</div><p class="n" id="clst" style="margin:-4px 0 8px"></p>`}
+ const showBr=!(D&&P!='dav')&&pvReady(P)&&pvOn(P);
+ o.innerHTML=`<div class="c" style="max-width:820px;width:100%;margin:0"><h2 style="margin-top:0">☁ Cloud storage <span class="row" style="margin:0"><button class="sm" id="clx">✕ Close</button></span></h2>
+ <div class="row" style="margin:0 0 10px;flex-wrap:wrap;gap:6px">${tabs}</div>${conn}
+ <div id="clbr">${showBr?'':''}</div>
+ ${showBr?`<div id="clsv" style="border-top:1px solid var(--bd);margin-top:10px;padding-top:10px"><label>Save the current project to this folder as</label><div class="row" style="margin:0"><input id="cln" value="${esc(nm)}" style="flex:1;min-width:200px"><button class="p" id="clsb">☁ Save here</button></div>
+ ${CLOUD.cur?`<p class="n" style="margin:6px 0 0">Open cloud file: <b>${esc(CLOUD.cur.name)}</b> (${PNM[CLOUD.cur.prov]||''}). Save (Ctrl+S) and AutoSave write back to it.</p>`:''}</div>`:''}</div>`;
+ document.body.appendChild(o);const q=s=>o.querySelector(s);q('#clx').onclick=()=>o.remove();
+ o.querySelectorAll('[data-pv]').forEach(b=>b.onclick=()=>{CLD.prov=b.dataset.pv;CLD.__picked=1;CLD.stack=null;try{localStorage.setItem('pcCloudProv',CLD.prov)}catch(e){}clDlg(CLD.mode,q('#cln')?q('#cln').value:fname)});
+ if(P=='dav'){q('#clk').onchange=()=>{const d=q('#clk').value=='dav';q('#clul').textContent=d?'WebDAV folder URL':'Server address';q('#clfw').style.display=d?'none':''};q('#clk').onchange();
+  const read=()=>{c.kind=q('#clk').value;c.url=q('#clu').value.trim();c.user=q('#clus').value.trim();c.folder=q('#clf').value.trim();c.remember=q('#clr').checked;CLOUD.pass=q('#clp').value;clSaveCfg()};
+  q('#clc').onclick=async()=>{read();if(!clOk()){q('#clst').textContent='Enter the server address and user name.';return}q('#clst').textContent='Connecting…';try{await davEnsure(clHome());CLD.stack=null;clDlg(CLD.mode,fname)}catch(e){q('#clst').innerHTML='<span style="color:#d92d20">'+esc(e.message||e)+'</span>'}};
+  q('#cldis').onclick=()=>{CLOUD.pass=null;CLOUD.cfg={kind:'nc',url:'',user:'',folder:'ProCOST',remember:true};clSaveCfg();try{localStorage.removeItem('pcCloudP');localStorage.removeItem('pcCloud')}catch(e){}if(CLOUD.cur&&CLOUD.cur.prov=='dav')clSetCur(null);o.remove();$('msg').textContent='Server connection removed from this device.'}}
+ if(q('#clkeys'))q('#clkeys').onclick=()=>{const v=q('#clkey').value.trim();if(!v)return;try{localStorage.setItem('pcKey_'+PKEY[P],v)}catch(e){}clDlg(CLD.mode,fname)};
+ if(q('#clin'))q('#clin').onclick=async()=>{q('#clst').textContent='Waiting for sign-in…';try{await PROV[P].login();CLD.stack=null;clDlg(CLD.mode,fname)}catch(e){q('#clst').innerHTML='<span style="color:#d92d20">'+esc(e.message||e)+'</span>'}};
+ if(q('#clout'))q('#clout').onclick=()=>{PROV[P].logout();if(CLOUD.cur&&CLOUD.cur.prov==P)clSetCur(null);clDlg(CLD.mode,fname)};
+ if(showBr){q('#clsb').onclick=async()=>{let n0=q('#cln').value.trim().replace(/[\\/:*?"<>|]+/g,' ');if(!n0)return;if(!/\.pcp$/i.test(n0))n0+='.pcp';const f=CLD.cur;q('#clsb').disabled=true;
+   try{await pvCall(P,pv=>pv.ensure(f));let L=[];try{L=await pvCall(P,pv=>pv.list(f))||[]}catch(e){}const ex=L.find(x=>!x.dir&&x.name.toLowerCase()==n0.toLowerCase());
+    const go=async(force)=>{const ok=await clWrite({prov:P,folder:f,name:ex?ex.name:n0,id:ex?ex.id:null,ver:ex?ex.ver:null,force},false);if(ok)o.remove();else if(q('#clsb'))q('#clsb').disabled=false};
+    if(ex&&!(CLOUD.cur&&CLOUD.cur.prov==P&&CLOUD.cur.id==ex.id)){q('#clsb').disabled=false;ask('“'+ex.name+'” already exists in this folder. Replace it?',['Replace'],()=>go(true))}else go(false)}catch(e){$('msg').textContent=e.message||e;if(q('#clsb'))q('#clsb').disabled=false}};
+  if(!CLD.stack||CLD.stack.prov!=P){const pv=PROV[P];CLD.stack={prov:P,s:[{l:'Home',r:pv.root()},{l:'ProCOST',r:pv.home()}]};if(P=='dav'){const rel=String(c.folder||'').split('/').filter(Boolean);CLD.stack.s=[{l:'Home',r:clRoot()}];let u=clRoot();rel.forEach(x=>{u+=encodeURIComponent(x)+'/';CLD.stack.s.push({l:x,r:u})})}}
+  clBrowse()}};
+clBrowse=async function(){const box=$('clbr');if(!box)return;const P=CLD.prov,S0=CLD.stack.s,f=S0[S0.length-1].r;CLD.cur=f;box.innerHTML='<p class="n">Loading…</p>';let L;
+ try{await pvCall(P,pv=>pv.ensure(f)).catch(()=>{});L=await pvCall(P,pv=>pv.list(f))}catch(e){box.innerHTML='<p style="color:#d92d20">'+esc(e.message||e)+'</p>';return}
+ if(L==null){box.innerHTML='<p class="n">This folder does not exist yet – it is created when you save.</p>';return}
+ const F=L.filter(x=>x.dir).sort((a,b)=>a.name.localeCompare(b.name)),G=L.filter(x=>!x.dir&&/\.(pcp|pcl|json)$/i.test(x.name)).sort((a,b)=>new Date(b.mod)-new Date(a.mod)),fmt=d=>{const t=new Date(d);return isNaN(t)?'':dmyS(t.toISOString().slice(0,10))+' '+String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0')},kb=b=>!b?'':b>1e6?(b/1e6).toFixed(1)+' MB':Math.max(1,Math.round(b/1e3))+' KB';
+ const crumb=S0.map((x,i)=>i<S0.length-1?`<a href="#" data-k="${i}">${esc(x.l)}</a>`:`<b>${esc(x.l)}</b>`).join(' / '),isCur=x=>CLOUD.cur&&CLOUD.cur.prov==P&&CLOUD.cur.id==x.id;
+ box.innerHTML=`<div class="row" style="align-items:center;margin:0 0 6px"><div style="flex:1">📁 ${crumb}</div><button class="sm" id="clnf">+ New folder</button><button class="sm" id="clrf">↻ Refresh</button></div>
+ <div style="border:1px solid var(--bd);border-radius:10px;max-height:44vh;overflow:auto"><table style="margin:0;min-width:0"><tr><th>Name</th><th>Modified</th><th class="num">Size</th><th></th></tr>
+ ${F.map((x,i)=>`<tr><td colspan="3"><a href="#" data-f="${i}">📁 ${esc(x.name)}</a></td><td></td></tr>`).join('')}
+ ${G.map((x,i)=>`<tr${isCur(x)?' style="background:var(--ac2)"':''}><td>${/\.pcl$/i.test(x.name)?'📚':'📄'} ${esc(x.name)}</td><td>${fmt(x.mod)}</td><td class="num">${kb(x.size)}</td><td style="white-space:nowrap"><button class="sm p" data-o="${i}">${/\.pcl$/i.test(x.name)?'Load library':'Open'}</button> <button class="sm" data-n="${i}" title="Use this name to save">Use name</button></td></tr>`).join('')}
+ ${!F.length&&!G.length?'<tr><td colspan="4" class="n">No ProCOST files in this folder yet.</td></tr>':''}</table></div>`;
+ box.querySelectorAll('[data-k]').forEach(a=>a.onclick=e=>{e.preventDefault();CLD.stack.s=S0.slice(0,+a.dataset.k+1);clBrowse()});
+ box.querySelectorAll('[data-f]').forEach(a=>a.onclick=e=>{e.preventDefault();const it=F[+a.dataset.f];CLD.stack.s=S0.concat([{l:it.name,r:PROV[P].sub(f,it)}]);clBrowse()});
+ box.querySelectorAll('[data-o]').forEach(b=>b.onclick=async()=>{const it=G[+b.dataset.o];$('cldlg').remove();await clOpen(it,P)});
+ box.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const i=$('cln');if(i)i.value=G[+b.dataset.n].name});
+ $('clrf').onclick=clBrowse;$('clnf').onclick=async()=>{const w=prompt0('New folder name');if(!w||!w.trim())return;try{const r=await pvCall(P,pv=>pv.mkdir(f,w.trim()));CLD.stack.s=S0.concat([{l:w.trim(),r}]);clBrowse()}catch(e){$('msg').textContent=e.message||e}}};
+/* labels */
+QI.cloud.t='Cloud storage (open / save)';
+{const o=qatUpd;qatUpd=function(){o.apply(this,arguments);try{const q=$('pcqat');if(!q)return;const cb=q.querySelector('[data-c=cloud]');if(cb)cb.title=CLOUD.cur?(PNM[CLOUD.cur.prov]||'Cloud')+': '+CLOUD.cur.name:'Cloud storage (open / save)';const s=q.querySelector('[data-c=save]');if(s&&CLOUD.cur)s.title='Save to '+(PNM[CLOUD.cur.prov]||'cloud')+' – '+CLOUD.cur.name+' (Ctrl+S)'}catch(e){}}}
+{const b=$('mi_cloud');if(b)b.textContent='☁ Cloud storage (Dropbox, Google Drive, OneDrive, Nextcloud)…'}
 
 /* first render after every module has loaded (avoids rendering the full rate table with the old renderer) */
 if(window.__boot0){window.__boot0=0;try{tab(0)}catch(e){console.error(e)}}
