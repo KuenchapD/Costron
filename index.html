@@ -2964,7 +2964,7 @@ QDEF.length=0;(window.store?['auto','save','undo','redo','cloud']:['open','cloud
 (function(){const m=$('mnu');if(!m||$('mi_cloud'))return;const w=document.createElement('div');w.innerHTML='<button class="mi" id="mi_cloud" onclick="tm();clDlg(\'open\')">☁ Server files (Nextcloud / WebDAV)…</button>';const after=$('mi_save');if(after)after.after(...w.children);else m.prepend(...w.children)})();
 setTimeout(()=>{try{qatDraw()}catch(e){}},800);
 if(!window.store){const o=json;json=function(){if(CLOUD.cur){const n0=CLOUD.cur.name;return ask('This project is open from your server ('+n0+'). Save it to the server, or download a copy to this computer?',['Save to server','Download a copy'],k=>{k==0?cloudSave(false):o.apply(this,[])})}return o.apply(this,arguments)}}
-(function(){const inp=$('imp');if(!inp)return;inp.addEventListener('change',()=>{if(!inp.files||!inp.files[0])return;const oa=ask;let done=0;ask=function(m,o,cb){done=1;ask=oa;return oa(m,o,k=>{cb(k);if(k==0)clSetCur(null)})};setTimeout(()=>{if(!done&&ask!==oa)ask=oa},8000)},true)})();
+/* (v171 open listener replaced in v174) */
 
 
 /* ===== v172: static web app + each user's own cloud (Dropbox, Google Drive, OneDrive, Nextcloud/WebDAV) ===== */
@@ -3137,6 +3137,41 @@ GDR.pick=async function(){const key=gKey('googleApiKey'),app=gKey('googleAppId')
   const row=out.parentElement;row.after(note);
   b.onclick=async()=>{if(!has){$('msg').textContent='Add a Google API key first (see CLOUD-SETUP.md).';return}try{dlg.style.display='none';const it=await GDR.pick();dlg.style.display='';if(!it)return;if(!/\.(pcp|pcl|json)$/i.test(it.name)){$('msg').textContent='“'+it.name+'” is not a ProCOST file (.pcp or .pcl).';return}dlg.remove();CLD.cur=it.parent||'__home';await clOpen({id:it.id,name:it.name,ver:''},'google')}catch(e){dlg.style.display='';$('msg').textContent=e.message||e}};
   const gk=dlg.querySelector('#clgk');if(gk)gk.onclick=e=>{e.preventDefault();const k=prompt0('Google API key (for the file picker)');if(!k)return;const a=prompt0('Google Cloud project number (optional, from the project dashboard)')||'';try{localStorage.setItem('pcKey_googleApiKey',k.trim());if(a.trim())localStorage.setItem('pcKey_googleAppId',a.trim())}catch(x){}clDlg(CLD.mode)}}catch(e){console.error(e)}return r}}
+
+/* ===== v174 (web): open another file directly – save the current one first, no replace/merge question ===== */
+const WEB={base:null};
+function webMark(){setTimeout(()=>{try{WEB.base=unSnap()}catch(e){}},400)}
+function webDirty(){try{return WEB.base!=null&&unSnap()!==WEB.base}catch(e){return false}}
+setTimeout(()=>{if(WEB.base==null)webMark()},2700);
+{const o=clWrite;clWrite=async function(){const r=await o.apply(this,arguments);if(r)webMark();return r}}
+if(!window.store){const o=json;json=function(){const r=o.apply(this,arguments);if(!CLOUD.cur)webMark();return r}}
+/* save the open project before switching; resolves false if the user cancels */
+function webBeforeSwitch(nextName){return new Promise(async res=>{if(window.store||!webDirty())return res(true);
+ const nm=CLOUD.cur?CLOUD.cur.name:((S.cfg&&S.cfg.proj)||'this project');
+ if(CLOUD.cur){$('msg').textContent='Saving '+nm+'…';const ok=await clWrite(CLOUD.cur,false);if(ok)return res(true);
+  return ask('“'+nm+'” could not be saved to '+(PNM[CLOUD.cur.prov]||'the cloud')+'. Open “'+nextName+'” anyway? Unsaved changes will be lost.',['Open anyway'],()=>res(true)),setTimeout(()=>{},0)}
+ ask('Save changes to “'+nm+'” before opening “'+nextName+'”?',['Save to cloud…','Download .pcp','Don’t save'],k=>{if(k==0){$('msg').textContent='Save the current project first, then open the other file again.';clDlg('save');res(false)}else if(k==1){json();setTimeout(()=>res(true),600)}else res(true)})})}
+/* open a project file and replace the current one (no merge question) */
+async function webOpenText(t,name,after){let a;try{a=JSON.parse(t)}catch(e){$('msg').textContent='“'+name+'” is not a valid ProCOST file.';return false}
+ if(a&&a.type=='shared'){try{shOpenDesk(t,name)}catch(e){console.error(e)}return true}
+ if(Array.isArray(a))a={items:a};if(!(a&&(a.items||a.boq||a.meas))){$('msg').textContent='“'+name+'” is not a ProCOST project.';return false}
+ const oa=ask;ask=function(m,o,cb){ask=oa;cb(0);try{after&&after()}catch(e){}webMark();setTimeout(()=>{try{unInit()}catch(e){}},600);$('msg').textContent='Opened '+name};
+ impJ({files:[new File([t],name,{type:'application/json'})],value:''});return true}
+/* local Open (.pcp from this computer) */
+(function(){if(window.store)return;const inp=$('imp');if(!inp)return;inp.removeAttribute('onchange');inp.onchange=async()=>{const f=inp.files&&inp.files[0];inp.value='';if(!f)return;if(!await webBeforeSwitch(f.name))return;const t=await f.text();webOpenText(t,f.name,()=>clSetCur(null))}})();
+/* cloud Open */
+clOpen=async function(it,P){P=P||'dav';let r;try{r=await pvCall(P,pv=>pv.read(it))}catch(e){$('msg').textContent=e.message||e;return}const t=r.text;
+ if(/\.pcl$/i.test(it.name)){const inp=$('lbi');if(inp){const dt_=new DataTransfer();dt_.items.add(new File([t],it.name,{type:'application/json'}));inp.files=dt_.files;inp.dispatchEvent(new Event('change',{bubbles:true}))}return}
+ if(CLOUD.cur&&CLOUD.cur.prov==P&&CLOUD.cur.id==it.id&&!webDirty()){$('msg').textContent=it.name+' is already open.';return}
+ if(!await webBeforeSwitch(it.name))return;const folder=CLD.cur||PROV[P].home();
+ if(window.store){const oa=ask;ask=function(m,o,cb){ask=oa;return oa(m,o,k=>{cb(k);if(k==0)clSetCur({prov:P,id:it.id,folder,name:it.name,ver:r.ver,at:Date.now()})})};impJ({files:[new File([t],it.name,{type:'application/json'})],value:''});return}
+ webOpenText(t,it.name,()=>clSetCur({prov:P,id:it.id,folder,name:it.name,ver:r.ver,at:Date.now()}))};
+/* merge is still available on purpose: ⋮ → Import → ProCOST project (merge) */
+(function(){if(window.store)return;const pi=$('pi_');if(!pi||$('mi_merge'))return;const i=document.createElement('input');i.type='file';i.accept='.pcp,.json,.procost';i.className='hide';i.id='impmg';i.onchange=()=>{const f=i.files&&i.files[0];if(!f)return;const oa=ask;ask=function(m,o,cb){ask=oa;cb(1);$('msg').textContent='Merged '+f.name+' into the current project.'};impJ(i)};document.body.appendChild(i);
+ pi.insertAdjacentHTML('afterbegin','<button class="mi" id="mi_merge" onclick="tm();$(\'impmg\').click()">ProCOST project – merge into current (.pcp)</button>')})();
+
+/* web: privacy / terms links in the ⋮ menu when those pages exist next to the app */
+(function(){if(window.store||!/^https?:$/.test(location.protocol))return;fetch('privacy.html',{method:'HEAD',cache:'no-store'}).then(r=>{if(!r.ok)return;const m=$('mnu');if(!m||$('mi_legal'))return;m.insertAdjacentHTML('beforeend','<div id="mi_legal" class="n" style="padding:8px 14px;font-size:12px;border-top:1px solid var(--bd);margin-top:6px"><a href="privacy.html" target="_blank">Privacy policy</a> · <a href="terms.html" target="_blank">Terms</a></div>')}).catch(()=>{})})();
 
 /* first render after every module has loaded (avoids rendering the full rate table with the old renderer) */
 if(window.__boot0){window.__boot0=0;try{tab(0)}catch(e){console.error(e)}}
