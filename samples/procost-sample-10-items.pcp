@@ -1,0 +1,2844 @@
+{
+ "app": "procost",
+ "v": 3,
+ "cfg": {
+  "proj": "Riverside Pavilion – Stage 1 Works (10-item sample)",
+  "sym": "$",
+  "by": "",
+  "tax": 10
+ },
+ "items": [
+  {
+   "id": "it01",
+   "code": "PR-001",
+   "cat": "Preliminaries",
+   "name": "Site establishment, site office & amenities (12 months)",
+   "unit": "item",
+   "oq": 1,
+   "D": {
+    "m": [
+     {
+      "c": "M-024",
+      "n": "Site office & amenities hire",
+      "u": "month",
+      "q": 12,
+      "r": 1450,
+      "f": 0,
+      "w": 0
+     }
+    ],
+    "l": [
+     {
+      "c": "L-001",
+      "n": "General labourer",
+      "q": 2,
+      "h": 16,
+      "tu": "h",
+      "r": 62
+     }
+    ],
+    "p": [
+     {
+      "c": "P-007",
+      "n": "Mobile crane 25 t",
+      "q": 1,
+      "h": 4,
+      "tu": "h",
+      "r": 260
+     }
+    ],
+    "s": [
+     {
+      "n": "Services connection",
+      "a": 3500
+     }
+    ]
+   },
+   "P": {
+    "oncost": 25,
+    "tools": 3,
+    "super": 5,
+    "site": 8,
+    "ho": 10,
+    "cont": 3,
+    "esc": 0,
+    "prof": 10,
+    "tax": 10
+   }
+  },
+  {
+   "id": "it03",
+   "code": "PR-003",
+   "cat": "Preliminaries",
+   "name": "Site supervision – foreman",
+   "unit": "week",
+   "oq": 1,
+   "D": {
+    "m": [],
+    "l": [
+     {
+      "c": "L-012",
+      "n": "Site foreman",
+      "q": 1,
+      "h": 40,
+      "tu": "h",
+      "r": 95
+     }
+    ],
+    "p": [],
+    "s": []
+   },
+   "P": {
+    "oncost": 25,
+    "tools": 3,
+    "super": 5,
+    "site": 8,
+    "ho": 10,
+    "cont": 3,
+    "esc": 0,
+    "prof": 10,
+    "tax": 10
+   }
+  },
+  {
+   "id": "it06",
+   "code": "EW-001",
+   "cat": "Earthworks",
+   "name": "Site clearing and grubbing",
+   "unit": "m²",
+   "oq": 500,
+   "D": {
+    "m": [],
+    "l": [
+     {
+      "c": "L-001",
+      "n": "General labourer",
+      "q": 1,
+      "h": 6,
+      "tu": "h",
+      "r": 62
+     }
+    ],
+    "p": [
+     {
+      "c": "P-008",
+      "n": "Skid steer loader",
+      "q": 1,
+      "h": 6,
+      "tu": "h",
+      "r": 90
+     },
+     {
+      "c": "P-003",
+      "n": "Tipper truck 10 m³",
+      "q": 1,
+      "h": 6,
+      "tu": "h",
+      "r": 120
+     }
+    ],
+    "s": []
+   },
+   "P": {
+    "oncost": 25,
+    "tools": 3,
+    "super": 5,
+    "site": 8,
+    "ho": 10,
+    "cont": 3,
+    "esc": 0,
+    "prof": 10,
+    "tax": 10
+   }
+  },
+  {
+   "id": "it08",
+   "code": "EW-003",
+   "cat": "Earthworks",
+   "name": "Bulk excavation in clay to 1.5 m",
+   "unit": "m³",
+   "oq": 100,
+   "D": {
+    "m": [],
+    "l": [
+     {
+      "c": "L-001",
+      "n": "General labourer",
+      "q": 1,
+      "h": 6,
+      "tu": "h",
+      "r": 62
+     }
+    ],
+    "p": [
+     {
+      "c": "P-001",
+      "n": "Excavator 20 t (wet hire)",
+      "q": 1,
+      "h": 6,
+      "tu": "h",
+      "r": 165
+     },
+     {
+      "c": "P-003",
+      "n": "Tipper truck 10 m³",
+      "q": 2,
+      "h": 6,
+      "tu": "h",
+      "r": 120
+     }
+    ],
+    "s": []
+   },
+   "P": {
+    "oncost": 25,
+    "tools": 3,
+    "super": 5,
+    "site": 8,
+    "ho": 10,
+    "cont": 3,
+    "esc": 0,
+    "prof": 10,
+    "tax": 10
+   }
+  },
+  {
+   "id": "it10",
+   "code": "EW-005",
+   "cat": "Earthworks",
+   "name": "Imported select fill, compacted in 150 mm layers",
+   "unit": "m³",
+   "oq": 100,
+   "D": {
+    "m": [
+     {
+      "c": "M-009",
+      "n": "Imported select fill",
+      "u": "m³",
+      "q": 115,
+      "r": 38,
+      "f": 4,
+      "w": 10
+     }
+    ],
+    "l": [
+     {
+      "c": "L-001",
+      "n": "General labourer",
+      "q": 1,
+      "h": 6,
+      "tu": "h",
+      "r": 62
+     }
+    ],
+    "p": [
+     {
+      "c": "P-004",
+      "n": "Padfoot roller",
+      "q": 1,
+      "h": 5,
+      "tu": "h",
+      "r": 130
+     },
+     {
+      "c": "P-010",
+      "n": "Water cart",
+      "q": 1,
+      "h": 3,
+      "tu": "h",
+      "r": 110
+     },
+     {
+      "c": "P-008",
+      "n": "Skid steer loader",
+      "q": 1,
+      "h": 5,
+      "tu": "h",
+      "r": 90
+     }
+    ],
+    "s": []
+   },
+   "P": {
+    "oncost": 25,
+    "tools": 3,
+    "super": 5,
+    "site": 8,
+    "ho": 10,
+    "cont": 3,
+    "esc": 0,
+    "prof": 10,
+    "tax": 10
+   }
+  },
+  {
+   "id": "it12",
+   "code": "DR-001",
+   "cat": "Drainage",
+   "name": "DN225 PVC stormwater pipe incl. trench and bedding",
+   "unit": "m",
+   "oq": 20,
+   "D": {
+    "m": [
+     {
+      "c": "M-011",
+      "n": "PVC stormwater pipe DN225",
+      "u": "m",
+      "q": 21,
+      "r": 48,
+      "f": 0,
+      "w": 3
+     },
+     {
+      "c": "M-010",
+      "n": "Bedding sand",
+      "u": "t",
+      "q": 4,
+      "r": 45,
+      "f": 6,
+      "w": 5
+     }
+    ],
+    "l": [
+     {
+      "c": "L-007",
+      "n": "Pipelayer",
+      "q": 1,
+      "h": 8,
+      "tu": "h",
+      "r": 74
+     },
+     {
+      "c": "L-001",
+      "n": "General labourer",
+      "q": 1,
+      "h": 8,
+      "tu": "h",
+      "r": 62
+     }
+    ],
+    "p": [
+     {
+      "c": "P-002",
+      "n": "Excavator 5 t (wet hire)",
+      "q": 1,
+      "h": 6,
+      "tu": "h",
+      "r": 95
+     }
+    ],
+    "s": []
+   },
+   "P": {
+    "oncost": 25,
+    "tools": 3,
+    "super": 5,
+    "site": 8,
+    "ho": 10,
+    "cont": 3,
+    "esc": 0,
+    "prof": 10,
+    "tax": 10
+   }
+  },
+  {
+   "id": "it19",
+   "code": "CO-003",
+   "cat": "Concrete",
+   "name": "Strip footings, 32 MPa concrete",
+   "unit": "m³",
+   "oq": 10,
+   "D": {
+    "m": [
+     {
+      "c": "M-001",
+      "n": "Concrete 32 MPa ready-mix",
+      "u": "m³",
+      "q": 10,
+      "r": 290,
+      "f": 0,
+      "w": 3
+     }
+    ],
+    "l": [
+     {
+      "c": "L-002",
+      "n": "Concreter",
+      "q": 3,
+      "h": 6,
+      "tu": "h",
+      "r": 72
+     }
+    ],
+    "p": [
+     {
+      "c": "P-006",
+      "n": "Concrete pump",
+      "q": 1,
+      "h": 3,
+      "tu": "h",
+      "r": 210
+     },
+     {
+      "c": "P-012",
+      "n": "Concrete vibrator",
+      "q": 1,
+      "h": 6,
+      "tu": "h",
+      "r": 9
+     }
+    ],
+    "s": []
+   },
+   "P": {
+    "oncost": 25,
+    "tools": 3,
+    "super": 5,
+    "site": 8,
+    "ho": 10,
+    "cont": 3,
+    "esc": 0,
+    "prof": 10,
+    "tax": 10
+   }
+  },
+  {
+   "id": "it20",
+   "code": "CO-004",
+   "cat": "Concrete",
+   "name": "Ground slab 125 mm, 32 MPa, steel-trowel finish",
+   "unit": "m²",
+   "oq": 100,
+   "D": {
+    "m": [
+     {
+      "c": "M-001",
+      "n": "Concrete 32 MPa ready-mix",
+      "u": "m³",
+      "q": 12.8,
+      "r": 290,
+      "f": 0,
+      "w": 3
+     }
+    ],
+    "l": [
+     {
+      "c": "L-002",
+      "n": "Concreter",
+      "q": 4,
+      "h": 8,
+      "tu": "h",
+      "r": 72
+     }
+    ],
+    "p": [
+     {
+      "c": "P-006",
+      "n": "Concrete pump",
+      "q": 1,
+      "h": 4,
+      "tu": "h",
+      "r": 210
+     },
+     {
+      "c": "P-012",
+      "n": "Concrete vibrator",
+      "q": 1,
+      "h": 8,
+      "tu": "h",
+      "r": 9
+     }
+    ],
+    "s": []
+   },
+   "P": {
+    "oncost": 25,
+    "tools": 3,
+    "super": 5,
+    "site": 8,
+    "ho": 10,
+    "cont": 3,
+    "esc": 0,
+    "prof": 10,
+    "tax": 10
+   }
+  },
+  {
+   "id": "it37",
+   "code": "RO-001",
+   "cat": "Roofing",
+   "name": "Colorbond roof sheeting incl. fixings and flashings",
+   "unit": "m²",
+   "oq": 100,
+   "D": {
+    "m": [
+     {
+      "c": "M-017",
+      "n": "Colorbond roof sheeting 0.48 BMT",
+      "u": "m²",
+      "q": 108,
+      "r": 32,
+      "f": 1,
+      "w": 5
+     }
+    ],
+    "l": [
+     {
+      "c": "L-009",
+      "n": "Roofer",
+      "q": 2,
+      "h": 10,
+      "tu": "h",
+      "r": 82
+     }
+    ],
+    "p": [],
+    "s": []
+   },
+   "P": {
+    "oncost": 25,
+    "tools": 3,
+    "super": 5,
+    "site": 8,
+    "ho": 10,
+    "cont": 3,
+    "esc": 0,
+    "prof": 10,
+    "tax": 10
+   }
+  },
+  {
+   "id": "it43",
+   "code": "PV-004",
+   "cat": "Pavements",
+   "name": "Asphalt AC10 wearing course 40 mm",
+   "unit": "m²",
+   "oq": 500,
+   "D": {
+    "m": [
+     {
+      "c": "M-019",
+      "n": "Asphalt AC10",
+      "u": "t",
+      "q": 48,
+      "r": 165,
+      "f": 0,
+      "w": 3
+     }
+    ],
+    "l": [
+     {
+      "c": "L-001",
+      "n": "General labourer",
+      "q": 4,
+      "h": 4,
+      "tu": "h",
+      "r": 62
+     },
+     {
+      "c": "L-006",
+      "n": "Plant operator",
+      "q": 2,
+      "h": 4,
+      "tu": "h",
+      "r": 85
+     }
+    ],
+    "p": [
+     {
+      "c": "P-011",
+      "n": "Asphalt paver",
+      "q": 1,
+      "h": 4,
+      "tu": "h",
+      "r": 320
+     },
+     {
+      "c": "P-013",
+      "n": "Smooth drum roller",
+      "q": 1,
+      "h": 4,
+      "tu": "h",
+      "r": 140
+     }
+    ],
+    "s": []
+   },
+   "P": {
+    "oncost": 25,
+    "tools": 3,
+    "super": 5,
+    "site": 8,
+    "ho": 10,
+    "cont": 3,
+    "esc": 0,
+    "prof": 10,
+    "tax": 10
+   }
+  }
+ ],
+ "boq": [
+  {
+   "id": "b01",
+   "ref": "1",
+   "iid": "it01",
+   "desc": "Site establishment, site office & amenities (12 months)",
+   "unit": "item",
+   "rate": 0,
+   "qty": 1
+  },
+  {
+   "id": "b03",
+   "ref": "2",
+   "iid": "it03",
+   "desc": "Site supervision – foreman",
+   "unit": "week",
+   "rate": 0,
+   "qty": 30
+  },
+  {
+   "id": "b06",
+   "ref": "3",
+   "iid": "it06",
+   "desc": "Site clearing and grubbing",
+   "unit": "m²",
+   "rate": 0,
+   "qty": 4200
+  },
+  {
+   "id": "b08",
+   "ref": "4",
+   "iid": "it08",
+   "desc": "Bulk excavation in clay to 1.5 m",
+   "unit": "m³",
+   "rate": 0,
+   "qty": 1784.736,
+   "mid": "crkz2grusui"
+  },
+  {
+   "id": "b10",
+   "ref": "5",
+   "iid": "it10",
+   "desc": "Imported select fill, compacted in 150 mm layers",
+   "unit": "m³",
+   "rate": 0,
+   "qty": 980
+  },
+  {
+   "id": "b12",
+   "ref": "6",
+   "iid": "it12",
+   "desc": "DN225 PVC stormwater pipe incl. trench and bedding",
+   "unit": "m",
+   "rate": 0,
+   "qty": 185
+  },
+  {
+   "id": "b19",
+   "ref": "7",
+   "iid": "it19",
+   "desc": "Strip footings, 32 MPa concrete",
+   "unit": "m³",
+   "rate": 0,
+   "qty": 36
+  },
+  {
+   "id": "b20",
+   "ref": "8",
+   "iid": "it20",
+   "desc": "Ground slab 125 mm, 32 MPa, steel-trowel finish",
+   "unit": "m²",
+   "rate": 0,
+   "qty": 618.84,
+   "mid": "g89qlpjut9"
+  },
+  {
+   "id": "b37",
+   "ref": "9",
+   "iid": "it37",
+   "desc": "Colorbond roof sheeting incl. fixings and flashings",
+   "unit": "m²",
+   "rate": 0,
+   "qty": 920
+  },
+  {
+   "id": "b43",
+   "ref": "10",
+   "iid": "it43",
+   "desc": "Asphalt AC10 wearing course 40 mm",
+   "unit": "m²",
+   "rate": 0,
+   "qty": 2600
+  }
+ ],
+ "meas": [
+  {
+   "id": "crkz2grusui",
+   "ref": "4",
+   "desc": "Bulk excavation in clay to 1.5 m",
+   "unit": "m³",
+   "iid": "it08",
+   "rows": [
+    {
+     "d": "Pavilion footprint (grid A–F / 1–6)",
+     "s": "1",
+     "no": "1",
+     "l": "32.4",
+     "b": "24.6",
+     "h": "1.5",
+     "rm": "Dwg C-101"
+    },
+    {
+     "d": "Car park cut",
+     "s": "1",
+     "no": "1",
+     "l": "46.5",
+     "b": "10.2",
+     "h": "1.2",
+     "rm": "Dwg C-102"
+    },
+    {
+     "d": "Ramp and stairs",
+     "s": "1",
+     "no": "1",
+     "l": "8.4",
+     "b": "3.6",
+     "h": "0.9",
+     "rm": ""
+    },
+    {
+     "d": "Deduct existing service trench",
+     "s": "-1",
+     "no": "1",
+     "l": "12",
+     "b": "0.6",
+     "h": "1",
+     "rm": "Dwg C-103"
+    }
+   ],
+   "bq": "main",
+   "tsig": "[[[\"Pavilion footprint (grid A–F / 1–6)\",\"1\",\"1\",\"32.4\",\"24.6\",\"1.5\"],[\"Car park cut\",\"1\",\"1\",\"46.5\",\"10.2\",\"1.2\"],[\"Ramp and stairs\",\"1\",\"1\",\"8.4\",\"3.6\",\"0.9\"],[\"Deduct existing service trench\",\"-1\",\"1\",\"12\",\"0.6\",\"1\"]],\"m³\",\"Bulk excavation in clay to 1.5 m\",\"it08\"]"
+  },
+  {
+   "id": "g89qlpjut9",
+   "ref": "8",
+   "desc": "Ground slab 125 mm, 32 MPa, steel-trowel finish",
+   "unit": "m²",
+   "iid": "it20",
+   "rows": [
+    {
+     "d": "Main hall slab",
+     "s": "1",
+     "no": "1",
+     "l": "24.6",
+     "b": "18",
+     "h": "",
+     "rm": "Dwg S-201"
+    },
+    {
+     "d": "Change rooms and amenities",
+     "s": "1",
+     "no": "1",
+     "l": "12.6",
+     "b": "9.8",
+     "h": "",
+     "rm": "Dwg S-202"
+    },
+    {
+     "d": "Verandah",
+     "s": "1",
+     "no": "1",
+     "l": "18",
+     "b": "3",
+     "h": "",
+     "rm": "Dwg S-203"
+    },
+    {
+     "d": "Deduct void for floor waste pits",
+     "s": "-1",
+     "no": "4",
+     "l": "0.6",
+     "b": "0.6",
+     "h": "",
+     "rm": ""
+    }
+   ],
+   "bq": "main",
+   "tsig": "[[[\"Main hall slab\",\"1\",\"1\",\"24.6\",\"18\",\"\"],[\"Change rooms and amenities\",\"1\",\"1\",\"12.6\",\"9.8\",\"\"],[\"Verandah\",\"1\",\"1\",\"18\",\"3\",\"\"],[\"Deduct void for floor waste pits\",\"-1\",\"4\",\"0.6\",\"0.6\",\"\"]],\"m²\",\"Ground slab 125 mm, 32 MPa, steel-trowel finish\",\"it20\"]"
+  },
+  {
+   "id": "3lqwvlzxq9n",
+   "ref": "4",
+   "desc": "Bulk excavation in clay to 1.5 m",
+   "unit": "m³",
+   "iid": "it08",
+   "rows": [
+    {
+     "d": "Pavilion footprint (grid A–F / 1–6)",
+     "s": "1",
+     "no": "1",
+     "l": "32.4",
+     "b": "24.6",
+     "h": "1.5",
+     "rm": "Dwg C-101"
+    },
+    {
+     "d": "Car park cut",
+     "s": "1",
+     "no": "1",
+     "l": "46.5",
+     "b": "10.2",
+     "h": "1.2",
+     "rm": "Dwg C-102"
+    },
+    {
+     "d": "Ramp and stairs",
+     "s": "1",
+     "no": "1",
+     "l": "8.4",
+     "b": "3.6",
+     "h": "0.9",
+     "rm": ""
+    },
+    {
+     "d": "Deduct existing service trench",
+     "s": "-1",
+     "no": "1",
+     "l": "12",
+     "b": "0.6",
+     "h": "1",
+     "rm": "Dwg C-103"
+    }
+   ],
+   "bq": "gn0i9r22qqi",
+   "tsig": "[[[\"Pavilion footprint (grid A–F / 1–6)\",\"1\",\"1\",\"32.4\",\"24.6\",\"1.5\"],[\"Car park cut\",\"1\",\"1\",\"46.5\",\"10.2\",\"1.2\"],[\"Ramp and stairs\",\"1\",\"1\",\"8.4\",\"3.6\",\"0.9\"],[\"Deduct existing service trench\",\"-1\",\"1\",\"12\",\"0.6\",\"1\"]],\"m³\",\"Bulk excavation in clay to 1.5 m\",\"it08\"]"
+  },
+  {
+   "id": "o5eoe34p09o",
+   "ref": "8",
+   "desc": "Ground slab 125 mm, 32 MPa, steel-trowel finish",
+   "unit": "m²",
+   "iid": "it20",
+   "rows": [
+    {
+     "d": "Main hall slab",
+     "s": "1",
+     "no": "1",
+     "l": "24.6",
+     "b": "18",
+     "h": "",
+     "rm": "Dwg S-201"
+    },
+    {
+     "d": "Change rooms and amenities",
+     "s": "1",
+     "no": "1",
+     "l": "12.6",
+     "b": "9.8",
+     "h": "",
+     "rm": "Dwg S-202"
+    },
+    {
+     "d": "Verandah",
+     "s": "1",
+     "no": "1",
+     "l": "18",
+     "b": "3",
+     "h": "",
+     "rm": "Dwg S-203"
+    },
+    {
+     "d": "Deduct void for floor waste pits",
+     "s": "-1",
+     "no": "4",
+     "l": "0.6",
+     "b": "0.6",
+     "h": "",
+     "rm": ""
+    }
+   ],
+   "bq": "gn0i9r22qqi",
+   "tsig": "[[[\"Main hall slab\",\"1\",\"1\",\"24.6\",\"18\",\"\"],[\"Change rooms and amenities\",\"1\",\"1\",\"12.6\",\"9.8\",\"\"],[\"Verandah\",\"1\",\"1\",\"18\",\"3\",\"\"],[\"Deduct void for floor waste pits\",\"-1\",\"4\",\"0.6\",\"0.6\",\"\"]],\"m²\",\"Ground slab 125 mm, 32 MPa, steel-trowel finish\",\"it20\"]"
+  }
+ ],
+ "lib": [],
+ "tpls": [],
+ "tb": {
+  "lines": [
+   {
+    "id": "urep6ugzcha",
+    "ref": "1",
+    "code": "PR-001",
+    "cat": "Preliminaries",
+    "desc": "Site establishment, site office & amenities (12 months)",
+    "unit": "item",
+    "qty": 1,
+    "rate": 33083.06,
+    "tx": 10,
+    "iid": "it01",
+    "an": {
+     "id": "it01",
+     "code": "PR-001",
+     "cat": "Preliminaries",
+     "name": "Site establishment, site office & amenities (12 months)",
+     "unit": "item",
+     "oq": 1,
+     "D": {
+      "m": [
+       {
+        "c": "M-024",
+        "n": "Site office & amenities hire",
+        "u": "month",
+        "q": 12,
+        "r": 1450,
+        "f": 0,
+        "w": 0
+       }
+      ],
+      "l": [
+       {
+        "c": "L-001",
+        "n": "General labourer",
+        "q": 2,
+        "h": 16,
+        "tu": "h",
+        "r": 62
+       }
+      ],
+      "p": [
+       {
+        "c": "P-007",
+        "n": "Mobile crane 25 t",
+        "q": 1,
+        "h": 4,
+        "tu": "h",
+        "r": 260
+       }
+      ],
+      "s": [
+       {
+        "n": "Services connection",
+        "a": 3500
+       }
+      ]
+     },
+     "P": {
+      "oncost": 25,
+      "tools": 3,
+      "super": 5,
+      "site": 8,
+      "ho": 10,
+      "cont": 3,
+      "esc": 0,
+      "prof": 10,
+      "tax": 10
+     }
+    }
+   },
+   {
+    "id": "f242s1s48ie",
+    "ref": "2",
+    "code": "PR-003",
+    "cat": "Preliminaries",
+    "desc": "Site supervision – foreman",
+    "unit": "week",
+    "qty": 30,
+    "rate": 6802.7,
+    "tx": 10,
+    "iid": "it03",
+    "an": {
+     "id": "it03",
+     "code": "PR-003",
+     "cat": "Preliminaries",
+     "name": "Site supervision – foreman",
+     "unit": "week",
+     "oq": 1,
+     "D": {
+      "m": [],
+      "l": [
+       {
+        "c": "L-012",
+        "n": "Site foreman",
+        "q": 1,
+        "h": 40,
+        "tu": "h",
+        "r": 95
+       }
+      ],
+      "p": [],
+      "s": []
+     },
+     "P": {
+      "oncost": 25,
+      "tools": 3,
+      "super": 5,
+      "site": 8,
+      "ho": 10,
+      "cont": 3,
+      "esc": 0,
+      "prof": 10,
+      "tax": 10
+     }
+    }
+   },
+   {
+    "id": "nx6ouai6yi9",
+    "ref": "3",
+    "code": "EW-001",
+    "cat": "Earthworks",
+    "desc": "Site clearing and grubbing",
+    "unit": "m²",
+    "qty": 4200,
+    "rate": 4.72,
+    "tx": 10,
+    "iid": "it06",
+    "an": {
+     "id": "it06",
+     "code": "EW-001",
+     "cat": "Earthworks",
+     "name": "Site clearing and grubbing",
+     "unit": "m²",
+     "oq": 500,
+     "D": {
+      "m": [],
+      "l": [
+       {
+        "c": "L-001",
+        "n": "General labourer",
+        "q": 1,
+        "h": 6,
+        "tu": "h",
+        "r": 62
+       }
+      ],
+      "p": [
+       {
+        "c": "P-008",
+        "n": "Skid steer loader",
+        "q": 1,
+        "h": 6,
+        "tu": "h",
+        "r": 90
+       },
+       {
+        "c": "P-003",
+        "n": "Tipper truck 10 m³",
+        "q": 1,
+        "h": 6,
+        "tu": "h",
+        "r": 120
+       }
+      ],
+      "s": []
+     },
+     "P": {
+      "oncost": 25,
+      "tools": 3,
+      "super": 5,
+      "site": 8,
+      "ho": 10,
+      "cont": 3,
+      "esc": 0,
+      "prof": 10,
+      "tax": 10
+     }
+    }
+   },
+   {
+    "id": "xcimgqcqscp",
+    "ref": "4",
+    "code": "EW-003",
+    "cat": "Earthworks",
+    "desc": "Bulk excavation in clay to 1.5 m",
+    "unit": "m³",
+    "qty": 1784.736,
+    "rate": 37.01,
+    "tx": 10,
+    "iid": "it08",
+    "an": {
+     "id": "it08",
+     "code": "EW-003",
+     "cat": "Earthworks",
+     "name": "Bulk excavation in clay to 1.5 m",
+     "unit": "m³",
+     "oq": 100,
+     "D": {
+      "m": [],
+      "l": [
+       {
+        "c": "L-001",
+        "n": "General labourer",
+        "q": 1,
+        "h": 6,
+        "tu": "h",
+        "r": 62
+       }
+      ],
+      "p": [
+       {
+        "c": "P-001",
+        "n": "Excavator 20 t (wet hire)",
+        "q": 1,
+        "h": 6,
+        "tu": "h",
+        "r": 165
+       },
+       {
+        "c": "P-003",
+        "n": "Tipper truck 10 m³",
+        "q": 2,
+        "h": 6,
+        "tu": "h",
+        "r": 120
+       }
+      ],
+      "s": []
+     },
+     "P": {
+      "oncost": 25,
+      "tools": 3,
+      "super": 5,
+      "site": 8,
+      "ho": 10,
+      "cont": 3,
+      "esc": 0,
+      "prof": 10,
+      "tax": 10
+     }
+    }
+   },
+   {
+    "id": "rou17cbgqvo",
+    "ref": "5",
+    "code": "EW-005",
+    "cat": "Earthworks",
+    "desc": "Imported select fill, compacted in 150 mm layers",
+    "unit": "m³",
+    "qty": 980,
+    "rate": 97.42,
+    "tx": 10,
+    "iid": "it10",
+    "an": {
+     "id": "it10",
+     "code": "EW-005",
+     "cat": "Earthworks",
+     "name": "Imported select fill, compacted in 150 mm layers",
+     "unit": "m³",
+     "oq": 100,
+     "D": {
+      "m": [
+       {
+        "c": "M-009",
+        "n": "Imported select fill",
+        "u": "m³",
+        "q": 115,
+        "r": 38,
+        "f": 4,
+        "w": 10
+       }
+      ],
+      "l": [
+       {
+        "c": "L-001",
+        "n": "General labourer",
+        "q": 1,
+        "h": 6,
+        "tu": "h",
+        "r": 62
+       }
+      ],
+      "p": [
+       {
+        "c": "P-004",
+        "n": "Padfoot roller",
+        "q": 1,
+        "h": 5,
+        "tu": "h",
+        "r": 130
+       },
+       {
+        "c": "P-010",
+        "n": "Water cart",
+        "q": 1,
+        "h": 3,
+        "tu": "h",
+        "r": 110
+       },
+       {
+        "c": "P-008",
+        "n": "Skid steer loader",
+        "q": 1,
+        "h": 5,
+        "tu": "h",
+        "r": 90
+       }
+      ],
+      "s": []
+     },
+     "P": {
+      "oncost": 25,
+      "tools": 3,
+      "super": 5,
+      "site": 8,
+      "ho": 10,
+      "cont": 3,
+      "esc": 0,
+      "prof": 10,
+      "tax": 10
+     }
+    }
+   },
+   {
+    "id": "o92rwm78pz",
+    "ref": "6",
+    "code": "DR-001",
+    "cat": "Drainage",
+    "desc": "DN225 PVC stormwater pipe incl. trench and bedding",
+    "unit": "m",
+    "qty": 185,
+    "rate": 220.04,
+    "tx": 10,
+    "iid": "it12",
+    "an": {
+     "id": "it12",
+     "code": "DR-001",
+     "cat": "Drainage",
+     "name": "DN225 PVC stormwater pipe incl. trench and bedding",
+     "unit": "m",
+     "oq": 20,
+     "D": {
+      "m": [
+       {
+        "c": "M-011",
+        "n": "PVC stormwater pipe DN225",
+        "u": "m",
+        "q": 21,
+        "r": 48,
+        "f": 0,
+        "w": 3
+       },
+       {
+        "c": "M-010",
+        "n": "Bedding sand",
+        "u": "t",
+        "q": 4,
+        "r": 45,
+        "f": 6,
+        "w": 5
+       }
+      ],
+      "l": [
+       {
+        "c": "L-007",
+        "n": "Pipelayer",
+        "q": 1,
+        "h": 8,
+        "tu": "h",
+        "r": 74
+       },
+       {
+        "c": "L-001",
+        "n": "General labourer",
+        "q": 1,
+        "h": 8,
+        "tu": "h",
+        "r": 62
+       }
+      ],
+      "p": [
+       {
+        "c": "P-002",
+        "n": "Excavator 5 t (wet hire)",
+        "q": 1,
+        "h": 6,
+        "tu": "h",
+        "r": 95
+       }
+      ],
+      "s": []
+     },
+     "P": {
+      "oncost": 25,
+      "tools": 3,
+      "super": 5,
+      "site": 8,
+      "ho": 10,
+      "cont": 3,
+      "esc": 0,
+      "prof": 10,
+      "tax": 10
+     }
+    }
+   },
+   {
+    "id": "gur1bv7ttji",
+    "ref": "7",
+    "code": "CO-003",
+    "cat": "Concrete",
+    "desc": "Strip footings, 32 MPa concrete",
+    "unit": "m³",
+    "qty": 36,
+    "rate": 726.13,
+    "tx": 10,
+    "iid": "it19",
+    "an": {
+     "id": "it19",
+     "code": "CO-003",
+     "cat": "Concrete",
+     "name": "Strip footings, 32 MPa concrete",
+     "unit": "m³",
+     "oq": 10,
+     "D": {
+      "m": [
+       {
+        "c": "M-001",
+        "n": "Concrete 32 MPa ready-mix",
+        "u": "m³",
+        "q": 10,
+        "r": 290,
+        "f": 0,
+        "w": 3
+       }
+      ],
+      "l": [
+       {
+        "c": "L-002",
+        "n": "Concreter",
+        "q": 3,
+        "h": 6,
+        "tu": "h",
+        "r": 72
+       }
+      ],
+      "p": [
+       {
+        "c": "P-006",
+        "n": "Concrete pump",
+        "q": 1,
+        "h": 3,
+        "tu": "h",
+        "r": 210
+       },
+       {
+        "c": "P-012",
+        "n": "Concrete vibrator",
+        "q": 1,
+        "h": 6,
+        "tu": "h",
+        "r": 9
+       }
+      ],
+      "s": []
+     },
+     "P": {
+      "oncost": 25,
+      "tools": 3,
+      "super": 5,
+      "site": 8,
+      "ho": 10,
+      "cont": 3,
+      "esc": 0,
+      "prof": 10,
+      "tax": 10
+     }
+    }
+   },
+   {
+    "id": "75wlrqf3chh",
+    "ref": "8",
+    "code": "CO-004",
+    "cat": "Concrete",
+    "desc": "Ground slab 125 mm, 32 MPa, steel-trowel finish",
+    "unit": "m²",
+    "qty": 618.84,
+    "rate": 108.13,
+    "tx": 10,
+    "iid": "it20",
+    "an": {
+     "id": "it20",
+     "code": "CO-004",
+     "cat": "Concrete",
+     "name": "Ground slab 125 mm, 32 MPa, steel-trowel finish",
+     "unit": "m²",
+     "oq": 100,
+     "D": {
+      "m": [
+       {
+        "c": "M-001",
+        "n": "Concrete 32 MPa ready-mix",
+        "u": "m³",
+        "q": 12.8,
+        "r": 290,
+        "f": 0,
+        "w": 3
+       }
+      ],
+      "l": [
+       {
+        "c": "L-002",
+        "n": "Concreter",
+        "q": 4,
+        "h": 8,
+        "tu": "h",
+        "r": 72
+       }
+      ],
+      "p": [
+       {
+        "c": "P-006",
+        "n": "Concrete pump",
+        "q": 1,
+        "h": 4,
+        "tu": "h",
+        "r": 210
+       },
+       {
+        "c": "P-012",
+        "n": "Concrete vibrator",
+        "q": 1,
+        "h": 8,
+        "tu": "h",
+        "r": 9
+       }
+      ],
+      "s": []
+     },
+     "P": {
+      "oncost": 25,
+      "tools": 3,
+      "super": 5,
+      "site": 8,
+      "ho": 10,
+      "cont": 3,
+      "esc": 0,
+      "prof": 10,
+      "tax": 10
+     }
+    }
+   },
+   {
+    "id": "32xr0ulptat",
+    "ref": "9",
+    "code": "RO-001",
+    "cat": "Roofing",
+    "desc": "Colorbond roof sheeting incl. fixings and flashings",
+    "unit": "m²",
+    "qty": 920,
+    "rate": 78.13,
+    "tx": 10,
+    "iid": "it37",
+    "an": {
+     "id": "it37",
+     "code": "RO-001",
+     "cat": "Roofing",
+     "name": "Colorbond roof sheeting incl. fixings and flashings",
+     "unit": "m²",
+     "oq": 100,
+     "D": {
+      "m": [
+       {
+        "c": "M-017",
+        "n": "Colorbond roof sheeting 0.48 BMT",
+        "u": "m²",
+        "q": 108,
+        "r": 32,
+        "f": 1,
+        "w": 5
+       }
+      ],
+      "l": [
+       {
+        "c": "L-009",
+        "n": "Roofer",
+        "q": 2,
+        "h": 10,
+        "tu": "h",
+        "r": 82
+       }
+      ],
+      "p": [],
+      "s": []
+     },
+     "P": {
+      "oncost": 25,
+      "tools": 3,
+      "super": 5,
+      "site": 8,
+      "ho": 10,
+      "cont": 3,
+      "esc": 0,
+      "prof": 10,
+      "tax": 10
+     }
+    }
+   },
+   {
+    "id": "dka9e92ivq",
+    "ref": "10",
+    "code": "PV-004",
+    "cat": "Pavements",
+    "desc": "Asphalt AC10 wearing course 40 mm",
+    "unit": "m²",
+    "qty": 2600,
+    "rate": 34.54,
+    "tx": 10,
+    "iid": "it43",
+    "an": {
+     "id": "it43",
+     "code": "PV-004",
+     "cat": "Pavements",
+     "name": "Asphalt AC10 wearing course 40 mm",
+     "unit": "m²",
+     "oq": 500,
+     "D": {
+      "m": [
+       {
+        "c": "M-019",
+        "n": "Asphalt AC10",
+        "u": "t",
+        "q": 48,
+        "r": 165,
+        "f": 0,
+        "w": 3
+       }
+      ],
+      "l": [
+       {
+        "c": "L-001",
+        "n": "General labourer",
+        "q": 4,
+        "h": 4,
+        "tu": "h",
+        "r": 62
+       },
+       {
+        "c": "L-006",
+        "n": "Plant operator",
+        "q": 2,
+        "h": 4,
+        "tu": "h",
+        "r": 85
+       }
+      ],
+      "p": [
+       {
+        "c": "P-011",
+        "n": "Asphalt paver",
+        "q": 1,
+        "h": 4,
+        "tu": "h",
+        "r": 320
+       },
+       {
+        "c": "P-013",
+        "n": "Smooth drum roller",
+        "q": 1,
+        "h": 4,
+        "tu": "h",
+        "r": 140
+       }
+      ],
+      "s": []
+     },
+     "P": {
+      "oncost": 25,
+      "tools": 3,
+      "super": 5,
+      "site": 8,
+      "ho": 10,
+      "cont": 3,
+      "esc": 0,
+      "prof": 10,
+      "tax": 10
+     }
+    }
+   }
+  ],
+  "src": "main",
+  "vi": 20,
+  "vo": 1
+ },
+ "rab": [
+  {
+   "id": "d2fqhetv9zu",
+   "no": 1,
+   "date": "2026-08-31",
+   "note": "Progress claim – August 2026",
+   "tax": 10,
+   "q": {
+    "urep6ugzcha": 0.5,
+    "f242s1s48ie": 8,
+    "nx6ouai6yi9": 4200,
+    "xcimgqcqscp": 1070.842
+   },
+   "dom": {},
+   "items": [
+    "urep6ugzcha",
+    "f242s1s48ie",
+    "nx6ouai6yi9",
+    "xcimgqcqscp"
+   ]
+  },
+  {
+   "id": "v15zywacph",
+   "no": 2,
+   "date": "2026-09-30",
+   "note": "Progress claim – September 2026",
+   "tax": 10,
+   "q": {
+    "urep6ugzcha": 0.1,
+    "f242s1s48ie": 4,
+    "xcimgqcqscp": 713.894,
+    "rou17cbgqvo": 686,
+    "o92rwm78pz": 129.5,
+    "gur1bv7ttji": 36
+   },
+   "dom": {},
+   "items": [
+    "urep6ugzcha",
+    "f242s1s48ie",
+    "xcimgqcqscp",
+    "rou17cbgqvo",
+    "o92rwm78pz",
+    "gur1bv7ttji"
+   ]
+  },
+  {
+   "id": "9nbbu09cso",
+   "no": 3,
+   "date": "2026-10-23",
+   "note": "Progress claim – October 2026",
+   "tax": 10,
+   "q": {
+    "urep6ugzcha": 0.1,
+    "f242s1s48ie": 4,
+    "rou17cbgqvo": 372.4,
+    "o92rwm78pz": 55.5,
+    "75wlrqf3chh": 371.304,
+    "32xr0ulptat": 184
+   },
+   "dom": {},
+   "items": [
+    "urep6ugzcha",
+    "f242s1s48ie",
+    "rou17cbgqvo",
+    "o92rwm78pz",
+    "75wlrqf3chh",
+    "32xr0ulptat"
+   ]
+  }
+ ],
+ "res": {
+  "m": [
+   {
+    "id": "rm00",
+    "c": "M-001",
+    "n": "Concrete 32 MPa ready-mix",
+    "u": "m³",
+    "r": 290,
+    "f": 0,
+    "w": 3,
+    "tu": "h"
+   },
+   {
+    "id": "rm08",
+    "c": "M-009",
+    "n": "Imported select fill",
+    "u": "m³",
+    "r": 38,
+    "f": 4,
+    "w": 10,
+    "tu": "h"
+   },
+   {
+    "id": "rm09",
+    "c": "M-010",
+    "n": "Bedding sand",
+    "u": "t",
+    "r": 45,
+    "f": 6,
+    "w": 5,
+    "tu": "h"
+   },
+   {
+    "id": "rm10",
+    "c": "M-011",
+    "n": "PVC stormwater pipe DN225",
+    "u": "m",
+    "r": 48,
+    "f": 0,
+    "w": 3,
+    "tu": "h"
+   },
+   {
+    "id": "rm16",
+    "c": "M-017",
+    "n": "Colorbond roof sheeting 0.48 BMT",
+    "u": "m²",
+    "r": 32,
+    "f": 1,
+    "w": 5,
+    "tu": "h"
+   },
+   {
+    "id": "rm18",
+    "c": "M-019",
+    "n": "Asphalt AC10",
+    "u": "t",
+    "r": 165,
+    "f": 0,
+    "w": 3,
+    "tu": "h"
+   },
+   {
+    "id": "rm23",
+    "c": "M-024",
+    "n": "Site office & amenities hire",
+    "u": "month",
+    "r": 1450,
+    "f": 0,
+    "w": 0,
+    "tu": "h"
+   }
+  ],
+  "l": [
+   {
+    "id": "rl00",
+    "c": "L-001",
+    "n": "General labourer",
+    "u": "h",
+    "r": 62,
+    "tu": "h"
+   },
+   {
+    "id": "rl01",
+    "c": "L-002",
+    "n": "Concreter",
+    "u": "h",
+    "r": 72,
+    "tu": "h"
+   },
+   {
+    "id": "rl05",
+    "c": "L-006",
+    "n": "Plant operator",
+    "u": "h",
+    "r": 85,
+    "tu": "h"
+   },
+   {
+    "id": "rl06",
+    "c": "L-007",
+    "n": "Pipelayer",
+    "u": "h",
+    "r": 74,
+    "tu": "h"
+   },
+   {
+    "id": "rl08",
+    "c": "L-009",
+    "n": "Roofer",
+    "u": "h",
+    "r": 82,
+    "tu": "h"
+   },
+   {
+    "id": "rl11",
+    "c": "L-012",
+    "n": "Site foreman",
+    "u": "h",
+    "r": 95,
+    "tu": "h"
+   }
+  ],
+  "p": [
+   {
+    "id": "rp00",
+    "c": "P-001",
+    "n": "Excavator 20 t (wet hire)",
+    "u": "h",
+    "r": 165,
+    "tu": "h"
+   },
+   {
+    "id": "rp01",
+    "c": "P-002",
+    "n": "Excavator 5 t (wet hire)",
+    "u": "h",
+    "r": 95,
+    "tu": "h"
+   },
+   {
+    "id": "rp02",
+    "c": "P-003",
+    "n": "Tipper truck 10 m³",
+    "u": "h",
+    "r": 120,
+    "tu": "h"
+   },
+   {
+    "id": "rp03",
+    "c": "P-004",
+    "n": "Padfoot roller",
+    "u": "h",
+    "r": 130,
+    "tu": "h"
+   },
+   {
+    "id": "rp05",
+    "c": "P-006",
+    "n": "Concrete pump",
+    "u": "h",
+    "r": 210,
+    "tu": "h"
+   },
+   {
+    "id": "rp06",
+    "c": "P-007",
+    "n": "Mobile crane 25 t",
+    "u": "h",
+    "r": 260,
+    "tu": "h"
+   },
+   {
+    "id": "rp07",
+    "c": "P-008",
+    "n": "Skid steer loader",
+    "u": "h",
+    "r": 90,
+    "tu": "h"
+   },
+   {
+    "id": "rp09",
+    "c": "P-010",
+    "n": "Water cart",
+    "u": "h",
+    "r": 110,
+    "tu": "h"
+   },
+   {
+    "id": "rp10",
+    "c": "P-011",
+    "n": "Asphalt paver",
+    "u": "h",
+    "r": 320,
+    "tu": "h"
+   },
+   {
+    "id": "rp11",
+    "c": "P-012",
+    "n": "Concrete vibrator",
+    "u": "h",
+    "r": 9,
+    "tu": "h"
+   },
+   {
+    "id": "rp12",
+    "c": "P-013",
+    "n": "Smooth drum roller",
+    "u": "h",
+    "r": 140,
+    "tu": "h"
+   }
+  ]
+ },
+ "ct": {
+  "eot": [
+   {
+    "date": "2026-09-14",
+    "d": 10,
+    "r": "EOT 1 – wet weather (BoM records, 8 days lost)"
+   }
+  ],
+  "no": "RCP-2026-015",
+  "name": "Riverside Pavilion – Stage 1 Works",
+  "emp": "Riverside Shire Council (sample)",
+  "con": "Sample Constructions Pty Ltd",
+  "loc": "Riverside Reserve, VIC",
+  "scope": "Site establishment, earthworks, stormwater drainage, footings and ground slab, roof sheeting and car park asphalt.",
+  "start": "2026-06-29",
+  "end": "2026-11-27",
+  "amt": 713959.59,
+  "ld": 1500,
+  "ldb": "a",
+  "cap": 10,
+  "capb": "p",
+  "dlp": 12,
+  "dlpu": "m"
+ },
+ "pay": {
+  "cl": {
+   "d2fqhetv9zu": {
+    "date": "2026-08-31",
+    "paid": "2026-09-14",
+    "ref": "Invoice 1001",
+    "rec": {
+     "adv1": 10709.39
+    },
+    "ded": []
+   },
+   "v15zywacph": {
+    "date": "2026-09-30",
+    "paid": "2026-10-14",
+    "ref": "Invoice 1002",
+    "rec": {
+     "adv1": 14279.19
+    },
+    "ded": [
+     {
+      "d": "Back-charge – damaged council kerb",
+      "a": 1850
+     }
+    ]
+   },
+   "9nbbu09cso": {
+    "date": "2026-10-23",
+    "paid": "",
+    "ref": "Invoice 1003",
+    "rec": {
+     "adv1": 14279.19
+    },
+    "ded": []
+   }
+  },
+  "ret": 5,
+  "rcap": 5,
+  "rel": "half",
+  "advs": [
+   {
+    "id": "adv1",
+    "nm": "Mobilisation advance",
+    "b": "p",
+    "v": 10,
+    "dr": "2026-06-29",
+    "dp": "2026-07-06",
+    "sec": "Bank guarantee BG-2026-0381 (sample)"
+   }
+  ]
+ },
+ "sch": {
+  "tasks": [
+   {
+    "id": "s1",
+    "name": "Site possession",
+    "lvl": 0,
+    "pct": 100,
+    "pred": [],
+    "dur": 0,
+    "bl": {
+     "s": "2026-06-29",
+     "f": "2026-06-29"
+    }
+   },
+   {
+    "id": "s2",
+    "name": "Preliminaries",
+    "lvl": 0,
+    "pct": 0,
+    "pred": [],
+    "bl": {
+     "s": "2026-06-29",
+     "f": "2026-10-27"
+    }
+   },
+   {
+    "id": "s3",
+    "name": "Site establishment",
+    "lvl": 1,
+    "pct": 70,
+    "pred": [
+     {
+      "id": "s1",
+      "ty": "FS",
+      "lag": 0
+     }
+    ],
+    "dur": 5,
+    "val": 33083,
+    "res": "Site foreman",
+    "items": [
+     {
+      "k": "tb:urep6ugzcha",
+      "p": 100
+     }
+    ],
+    "bl": {
+     "s": "2026-06-29",
+     "f": "2026-07-03"
+    }
+   },
+   {
+    "id": "s4",
+    "name": "Site supervision (duration of works)",
+    "lvl": 1,
+    "pct": 55,
+    "pred": [
+     {
+      "id": "s1",
+      "ty": "FS",
+      "lag": 0
+     }
+    ],
+    "dur": 86,
+    "val": 204081,
+    "res": "Site foreman",
+    "items": [
+     {
+      "k": "tb:f242s1s48ie",
+      "p": 100
+     }
+    ],
+    "bl": {
+     "s": "2026-06-29",
+     "f": "2026-10-27"
+    }
+   },
+   {
+    "id": "s5",
+    "name": "Earthworks",
+    "lvl": 0,
+    "pct": 0,
+    "pred": [],
+    "bl": {
+     "s": "2026-07-06",
+     "f": "2026-08-20"
+    }
+   },
+   {
+    "id": "s6",
+    "name": "Site clearing and grubbing",
+    "lvl": 1,
+    "pct": 100,
+    "pred": [
+     {
+      "id": "s3",
+      "ty": "FS",
+      "lag": 0
+     }
+    ],
+    "dur": 10,
+    "val": 19824,
+    "res": "Earthworks subcontractor",
+    "items": [
+     {
+      "k": "tb:nx6ouai6yi9",
+      "p": 100
+     }
+    ],
+    "bl": {
+     "s": "2026-07-06",
+     "f": "2026-07-17"
+    }
+   },
+   {
+    "id": "s7",
+    "name": "Bulk excavation",
+    "lvl": 1,
+    "pct": 100,
+    "pred": [
+     {
+      "id": "s6",
+      "ty": "FS",
+      "lag": 0
+     }
+    ],
+    "dur": 18,
+    "val": 66053,
+    "res": "Earthworks subcontractor",
+    "items": [
+     {
+      "k": "tb:xcimgqcqscp",
+      "p": 100
+     }
+    ],
+    "bl": {
+     "s": "2026-07-20",
+     "f": "2026-08-18"
+    }
+   },
+   {
+    "id": "s8",
+    "name": "Select fill and compaction",
+    "lvl": 1,
+    "pct": 100,
+    "pred": [
+     {
+      "id": "s7",
+      "ty": "SS",
+      "lag": 6
+     }
+    ],
+    "dur": 18,
+    "val": 95472,
+    "res": "Earthworks subcontractor",
+    "items": [
+     {
+      "k": "tb:rou17cbgqvo",
+      "p": 100
+     }
+    ],
+    "bl": {
+     "s": "2026-07-28",
+     "f": "2026-08-20"
+    }
+   },
+   {
+    "id": "s9",
+    "name": "Drainage",
+    "lvl": 0,
+    "pct": 0,
+    "pred": [],
+    "bl": {
+     "s": "2026-07-27",
+     "f": "2026-08-31"
+    }
+   },
+   {
+    "id": "s10",
+    "name": "Stormwater pipework",
+    "lvl": 1,
+    "pct": 100,
+    "pred": [
+     {
+      "id": "s7",
+      "ty": "SS",
+      "lag": 5
+     }
+    ],
+    "dur": 26,
+    "val": 40707,
+    "res": "Drainage crew",
+    "items": [
+     {
+      "k": "tb:o92rwm78pz",
+      "p": 100
+     }
+    ],
+    "bl": {
+     "s": "2026-07-27",
+     "f": "2026-08-31"
+    }
+   },
+   {
+    "id": "s11",
+    "name": "Pavilion structure",
+    "lvl": 0,
+    "pct": 0,
+    "pred": [],
+    "bl": {
+     "s": "2026-08-21",
+     "f": "2026-10-13"
+    }
+   },
+   {
+    "id": "s12",
+    "name": "Strip footings",
+    "lvl": 1,
+    "pct": 100,
+    "pred": [
+     {
+      "id": "s8",
+      "ty": "FS",
+      "lag": 0
+     }
+    ],
+    "dur": 15,
+    "val": 26141,
+    "res": "Concrete crew",
+    "items": [
+     {
+      "k": "tb:gur1bv7ttji",
+      "p": 100
+     }
+    ],
+    "bl": {
+     "s": "2026-08-21",
+     "f": "2026-09-10"
+    }
+   },
+   {
+    "id": "s13",
+    "name": "Ground slab",
+    "lvl": 1,
+    "pct": 60,
+    "pred": [
+     {
+      "id": "s12",
+      "ty": "FS",
+      "lag": 0
+     }
+    ],
+    "dur": 22,
+    "val": 66915,
+    "res": "Concrete crew",
+    "items": [
+     {
+      "k": "tb:75wlrqf3chh",
+      "p": 100
+     }
+    ],
+    "bl": {
+     "s": "2026-09-11",
+     "f": "2026-10-13"
+    }
+   },
+   {
+    "id": "s14",
+    "name": "Roof sheeting",
+    "lvl": 0,
+    "pct": 20,
+    "pred": [
+     {
+      "id": "s13",
+      "ty": "SS",
+      "lag": 10
+     }
+    ],
+    "dur": 18,
+    "val": 71880,
+    "res": "Roofer",
+    "items": [
+     {
+      "k": "tb:32xr0ulptat",
+      "p": 100
+     }
+    ],
+    "bl": {
+     "s": "2026-09-28",
+     "f": "2026-10-21"
+    }
+   },
+   {
+    "id": "s15",
+    "name": "Car park asphalt",
+    "lvl": 0,
+    "pct": 0,
+    "pred": [
+     {
+      "id": "s10",
+      "ty": "FS",
+      "lag": 0
+     },
+     {
+      "id": "s13",
+      "ty": "FS",
+      "lag": 0
+     }
+    ],
+    "dur": 10,
+    "val": 89804,
+    "res": "Asphalt subcontractor",
+    "items": [
+     {
+      "k": "tb:dka9e92ivq",
+      "p": 100
+     }
+    ],
+    "bl": {
+     "s": "2026-10-14",
+     "f": "2026-10-27"
+    }
+   },
+   {
+    "id": "s16",
+    "name": "Practical completion",
+    "lvl": 0,
+    "pct": 0,
+    "pred": [
+     {
+      "id": "s14",
+      "ty": "FS",
+      "lag": 0
+     },
+     {
+      "id": "s15",
+      "ty": "FS",
+      "lag": 0
+     }
+    ],
+    "dur": 0,
+    "bl": {
+     "s": "2026-10-27",
+     "f": "2026-10-27"
+    }
+   }
+  ],
+  "wk": "mf",
+  "hol": [
+   {
+    "d": "2026-09-25",
+    "n": "AFL Grand Final Friday"
+   },
+   {
+    "d": "2026-11-03",
+    "n": "Melbourne Cup Day"
+   },
+   {
+    "d": "2026-12-25",
+    "n": "Christmas Day"
+   }
+  ],
+  "zoom": "w",
+  "showBL": 1,
+  "showCP": 1,
+  "showLk": 1,
+  "start": "2026-06-29",
+  "sd": "2026-10-23",
+  "psz": "a3",
+  "wd": [
+   {
+    "on": 0,
+    "s": "07:00",
+    "f": "17:00",
+    "b": 30
+   },
+   {
+    "on": 1,
+    "s": "07:00",
+    "f": "17:00",
+    "b": 30
+   },
+   {
+    "on": 1,
+    "s": "07:00",
+    "f": "17:00",
+    "b": 30
+   },
+   {
+    "on": 1,
+    "s": "07:00",
+    "f": "17:00",
+    "b": 30
+   },
+   {
+    "on": 1,
+    "s": "07:00",
+    "f": "17:00",
+    "b": 30
+   },
+   {
+    "on": 1,
+    "s": "07:00",
+    "f": "17:00",
+    "b": 30
+   },
+   {
+    "on": 0,
+    "s": "07:00",
+    "f": "12:00",
+    "b": 30
+   }
+  ]
+ },
+ "bql": [
+  {
+   "id": "main",
+   "name": "Main BoQ"
+  },
+  {
+   "id": "gn0i9r22qqi",
+   "name": "Option B – reduced car park"
+  }
+ ],
+ "bqd": {
+  "gn0i9r22qqi": [
+   {
+    "id": "1rlwxe4thov",
+    "ref": "1",
+    "iid": "it01",
+    "desc": "Site establishment, site office & amenities (12 months)",
+    "unit": "item",
+    "rate": 0,
+    "qty": 1
+   },
+   {
+    "id": "gcbgxdbwckf",
+    "ref": "2",
+    "iid": "it03",
+    "desc": "Site supervision – foreman",
+    "unit": "week",
+    "rate": 0,
+    "qty": 30
+   },
+   {
+    "id": "kcbgmqv0gt",
+    "ref": "3",
+    "iid": "it06",
+    "desc": "Site clearing and grubbing",
+    "unit": "m²",
+    "rate": 0,
+    "qty": 4200
+   },
+   {
+    "id": "oei1dxmlxye",
+    "ref": "4",
+    "iid": "it08",
+    "desc": "Bulk excavation in clay to 1.5 m",
+    "unit": "m³",
+    "rate": 0,
+    "qty": 1784.736,
+    "mid": "3lqwvlzxq9n"
+   },
+   {
+    "id": "9tylotka54g",
+    "ref": "5",
+    "iid": "it10",
+    "desc": "Imported select fill, compacted in 150 mm layers",
+    "unit": "m³",
+    "rate": 0,
+    "qty": 833
+   },
+   {
+    "id": "pbab4igsruj",
+    "ref": "6",
+    "iid": "it12",
+    "desc": "DN225 PVC stormwater pipe incl. trench and bedding",
+    "unit": "m",
+    "rate": 0,
+    "qty": 185
+   },
+   {
+    "id": "1jk0049k7ut",
+    "ref": "7",
+    "iid": "it19",
+    "desc": "Strip footings, 32 MPa concrete",
+    "unit": "m³",
+    "rate": 0,
+    "qty": 36
+   },
+   {
+    "id": "bj2sbf1m83u",
+    "ref": "8",
+    "iid": "it20",
+    "desc": "Ground slab 125 mm, 32 MPa, steel-trowel finish",
+    "unit": "m²",
+    "rate": 0,
+    "qty": 618.84,
+    "mid": "o5eoe34p09o"
+   },
+   {
+    "id": "h3q7urjbgyj",
+    "ref": "9",
+    "iid": "it37",
+    "desc": "Colorbond roof sheeting incl. fixings and flashings",
+    "unit": "m²",
+    "rate": 0,
+    "qty": 920
+   },
+   {
+    "id": "xo1m1ajdgu",
+    "ref": "10",
+    "iid": "it43",
+    "desc": "Asphalt AC10 wearing course 40 mm",
+    "unit": "m²",
+    "rate": 0,
+    "qty": 1800
+   },
+   {
+    "id": "h0x2phqj1hb",
+    "ref": "11",
+    "iid": "",
+    "code": "LA-004",
+    "cat": "Landscaping",
+    "desc": "Garden beds with mass planting and mulch",
+    "unit": "m²",
+    "rate": 68,
+    "qty": 380
+   }
+  ]
+ },
+ "bqa": "main",
+ "loc": {
+  "base": "Base location",
+  "list": [],
+  "act": "base",
+  "view": "base",
+  "__mat": 1,
+  "__m": 1
+ },
+ "tnd": {
+  "bids": [
+   {
+    "id": "byson5fg44d",
+    "name": "Apex Civil Pty Ltd",
+    "date": "2026-05-14",
+    "quoted": "",
+    "disc": 1.5,
+    "resp": "y",
+    "note": "",
+    "rates": {
+     "b01": 33280.74,
+     "b03": 7258.91,
+     "b06": 4.35,
+     "b08": 34.45,
+     "b10": 88.14,
+     "b12": 227.14,
+     "b19": 651.16,
+     "b20": 97.49,
+     "b37": 83.12,
+     "b43": 30.64
+    }
+   },
+   {
+    "id": "po69ruz6b3",
+    "name": "BuildRight Constructions",
+    "date": "2026-05-14",
+    "quoted": "",
+    "disc": 0,
+    "resp": "y",
+    "note": "",
+    "rates": {
+     "b01": 27154.65,
+     "b03": 6901.22,
+     "b06": 4.69,
+     "b08": 37.57,
+     "b10": 90.6,
+     "b12": 201.23,
+     "b19": 668.38,
+     "b20": 99.9,
+     "b37": 71.43,
+     "b43": 26.96
+    }
+   },
+   {
+    "id": "epfsmj3iapd",
+    "name": "Coastal Infrastructure Group",
+    "date": "2026-05-14",
+    "quoted": "",
+    "disc": 2,
+    "resp": "y",
+    "note": "",
+    "rates": {
+     "b01": 35887.42,
+     "b03": 7300.25,
+     "b06": 5.46,
+     "b08": 42.78,
+     "b10": 109.05,
+     "b12": 223.8,
+     "b19": 833.7,
+     "b20": 115.31,
+     "b37": 86.49,
+     "b43": 37.14
+    }
+   },
+   {
+    "id": "e55hzlhefem",
+    "name": "Delta Earthworks & Building",
+    "date": "2026-05-14",
+    "quoted": "",
+    "disc": 0,
+    "resp": "y",
+    "note": "",
+    "rates": {
+     "b01": 29071.16,
+     "b03": 6134.65,
+     "b06": 4.01,
+     "b08": 38.94,
+     "b10": 81.71,
+     "b12": 195.77,
+     "b19": 657.73,
+     "b20": 106.58,
+     "b37": 83.22,
+     "b43": 31.86
+    }
+   }
+  ],
+  "thr": 25,
+  "boq": "main",
+  "sel": "byson5fg44d",
+  "tech": {
+   "crit": [
+    {
+     "id": "lfjbdk3pkz",
+     "name": "Relevant experience on similar works",
+     "w": 25
+    },
+    {
+     "id": "9xop5daj3o6",
+     "name": "Key personnel – qualifications and experience",
+     "w": 20
+    },
+    {
+     "id": "7nyccn6daui",
+     "name": "Methodology and work programme",
+     "w": 20
+    },
+    {
+     "id": "6w92xf2i0xg",
+     "name": "Plant and equipment",
+     "w": 15
+    },
+    {
+     "id": "nhmx7sr84y",
+     "name": "Financial capacity",
+     "w": 10
+    },
+    {
+     "id": "gz6ldbvqfp",
+     "name": "WHS, quality and environmental management",
+     "w": 10
+    }
+   ],
+   "sc": {
+    "byson5fg44d": {
+     "lfjbdk3pkz": 8.5,
+     "9xop5daj3o6": 8,
+     "7nyccn6daui": 8,
+     "6w92xf2i0xg": 7,
+     "nhmx7sr84y": 8,
+     "gz6ldbvqfp": 9
+    },
+    "po69ruz6b3": {
+     "lfjbdk3pkz": 6,
+     "9xop5daj3o6": 5.5,
+     "7nyccn6daui": 6,
+     "6w92xf2i0xg": 6,
+     "nhmx7sr84y": 5,
+     "gz6ldbvqfp": 6.5
+    },
+    "epfsmj3iapd": {
+     "lfjbdk3pkz": 8,
+     "9xop5daj3o6": 9,
+     "7nyccn6daui": 7.5,
+     "6w92xf2i0xg": 8,
+     "nhmx7sr84y": 7,
+     "gz6ldbvqfp": 8
+    },
+    "e55hzlhefem": {
+     "lfjbdk3pkz": 7,
+     "9xop5daj3o6": 7.5,
+     "7nyccn6daui": 7,
+     "6w92xf2i0xg": 7,
+     "nhmx7sr84y": 6.5,
+     "gz6ldbvqfp": 7
+    }
+   },
+   "rm": {
+    "po69ruz6b3": "Limited experience on similar civil works; key personnel CVs incomplete."
+   },
+   "pass": 70,
+   "wt": 30,
+   "meth": "qcbs"
+  }
+ },
+ "inv": {
+  "del": [
+   {
+    "id": "zj7n50u3e2",
+    "date": "2026-06-29",
+    "k": "m:M-024",
+    "q": 5.09,
+    "c": 7528.11,
+    "ref": "Delivery docket 1002"
+   },
+   {
+    "id": "rn3tndm9il",
+    "date": "2026-07-20",
+    "k": "m:M-011",
+    "q": 124.35,
+    "c": 5909.11,
+    "ref": "Delivery docket 1006"
+   },
+   {
+    "id": "6v7wy5gu1f",
+    "date": "2026-07-20",
+    "k": "m:M-010",
+    "q": 25,
+    "c": 1402.5,
+    "ref": "Delivery docket 1008"
+   },
+   {
+    "id": "bjq61xbg0j5",
+    "date": "2026-07-21",
+    "k": "m:M-009",
+    "q": 743.21,
+    "c": 33087.71,
+    "ref": "Delivery docket 1004"
+   },
+   {
+    "id": "2w0hwea49cx",
+    "date": "2026-08-14",
+    "k": "m:M-001",
+    "q": 61.57,
+    "c": 17319.64,
+    "ref": "Delivery docket 1010"
+   },
+   {
+    "id": "o64gi0ahg3r",
+    "date": "2026-08-26",
+    "k": "m:M-024",
+    "q": 4.17,
+    "c": 6229.1,
+    "ref": "Delivery docket 1003"
+   },
+   {
+    "id": "0asgktigrte",
+    "date": "2026-09-09",
+    "k": "m:M-011",
+    "q": 101.74,
+    "c": 4883.03,
+    "ref": "Delivery docket 1007"
+   },
+   {
+    "id": "yw7anl7fpln",
+    "date": "2026-09-09",
+    "k": "m:M-010",
+    "q": 20.46,
+    "c": 1159.28,
+    "ref": "Delivery docket 1009"
+   },
+   {
+    "id": "4qyi2odszr",
+    "date": "2026-09-10",
+    "k": "m:M-009",
+    "q": 608.07,
+    "c": 27341.99,
+    "ref": "Delivery docket 1005"
+   },
+   {
+    "id": "9ly15u135ev",
+    "date": "2026-09-21",
+    "k": "m:M-017",
+    "q": 120.5,
+    "c": 4056.03,
+    "ref": "Delivery docket 1012"
+   },
+   {
+    "id": "4h8z18ea0rk",
+    "date": "2026-09-22",
+    "k": "m:M-001",
+    "q": 50.37,
+    "c": 14310.77,
+    "ref": "Delivery docket 1011"
+   },
+   {
+    "id": "5988vcmf94",
+    "date": "2026-10-11",
+    "k": "m:M-017",
+    "q": 98.59,
+    "c": 3351.72,
+    "ref": "Delivery docket 1013"
+   }
+  ],
+  "iss": [
+   {
+    "id": "3q1ie5ojbnh",
+    "date": "2026-06-30",
+    "k": "m:M-024",
+    "q": 5.19,
+    "ref": "Site crew"
+   },
+   {
+    "id": "8aj8ruhlr6n",
+    "date": "2026-07-27",
+    "k": "m:M-011",
+    "q": 128.45,
+    "ref": "Site crew"
+   },
+   {
+    "id": "zdr9xel0io",
+    "date": "2026-07-27",
+    "k": "m:M-010",
+    "q": 23.78,
+    "ref": "Site crew"
+   },
+   {
+    "id": "cx55ce1w7vg",
+    "date": "2026-07-28",
+    "k": "m:M-009",
+    "q": 736.38,
+    "ref": "Site crew"
+   },
+   {
+    "id": "37dyads9u4j",
+    "date": "2026-08-21",
+    "k": "m:M-001",
+    "q": 51.62,
+    "ref": "Site crew"
+   },
+   {
+    "id": "l4elc4vjys",
+    "date": "2026-08-28",
+    "k": "m:M-024",
+    "q": 3.46,
+    "ref": "Site crew"
+   },
+   {
+    "id": "xbhw3risi4k",
+    "date": "2026-09-11",
+    "k": "m:M-011",
+    "q": 85.63,
+    "ref": "Site crew"
+   },
+   {
+    "id": "n1blda3jtzs",
+    "date": "2026-09-11",
+    "k": "m:M-010",
+    "q": 15.85,
+    "ref": "Site crew"
+   },
+   {
+    "id": "r1ggvjds7pc",
+    "date": "2026-09-12",
+    "k": "m:M-009",
+    "q": 490.92,
+    "ref": "Site crew"
+   },
+   {
+    "id": "85ca0u0b9z5",
+    "date": "2026-09-24",
+    "k": "m:M-001",
+    "q": 34.41,
+    "ref": "Site crew"
+   },
+   {
+    "id": "siiif3f1ipi",
+    "date": "2026-09-28",
+    "k": "m:M-017",
+    "q": 128.95,
+    "ref": "Site crew"
+   },
+   {
+    "id": "75f9gg7qp35",
+    "date": "2026-10-13",
+    "k": "m:M-017",
+    "q": 85.97,
+    "ref": "Site crew"
+   }
+  ],
+  "set": {
+   "m:M-001": {
+    "lead": 3,
+    "min": 10
+   },
+   "m:M-004": {
+    "lead": 14,
+    "min": 1
+   },
+   "m:M-005": {
+    "lead": 10,
+    "min": 50
+   },
+   "m:M-014": {
+    "lead": 14,
+    "min": 500
+   },
+   "m:M-016": {
+    "lead": 35,
+    "min": 0
+   },
+   "m:M-017": {
+    "lead": 28,
+    "min": 0
+   },
+   "m:M-019": {
+    "lead": 5,
+    "min": 0
+   },
+   "m:M-008": {
+    "lead": 5,
+    "min": 20
+   }
+  }
+ }
+}
