@@ -1,6 +1,6 @@
-# ProCOST — Project Costing, Optimisation, Scheduling & Tracking
+# COSTRON — Project Costing, Optimisation, Scheduling & Tracking
 
-ProCOST is a construction costing, bill of quantities, tender, delivery, scheduling and tracking tool that runs entirely in the browser.
+COSTRON is a construction costing, bill of quantities, tender, delivery, scheduling and tracking tool that runs entirely in the browser.
 
 **Open the app:** `https://<your-github-username>.github.io/<repository-name>/`
 
@@ -18,27 +18,32 @@ ProCOST is a construction costing, bill of quantities, tender, delivery, schedul
 - Use **Save** (Quick Access Toolbar or Ctrl+S) to download your project as a `.pcp` file. Keep it as your backup, or open it on another computer with **Open**.
 - Clearing your browser data deletes the project stored in the browser, so save a `.pcp` file regularly.
 
+## Sign-in page
+Optional email + password sign-in with *Forgot password?*, using Firebase Authentication. See **[LOGIN-SETUP.md](LOGIN-SETUP.md)**.
+
 ## Save to your own cloud
 This site is static. Each user can connect **their own** cloud with **☁ Cloud storage** and open and save projects there, with AutoSave and conflict warnings:
-- **Dropbox, Google Drive, OneDrive:** the site owner registers ProCOST once and pastes the IDs into `config.js`. See **[CLOUD-SETUP.md](CLOUD-SETUP.md)**.
+- **Dropbox, Google Drive, OneDrive:** the site owner registers COSTRON once and pastes the IDs into `config.js`. See **[CLOUD-SETUP.md](CLOUD-SETUP.md)**.
 - **Nextcloud / WebDAV:** see **[SERVER-SETUP.md](SERVER-SETUP.md)**.
 
 ## Rate libraries
-The `libraries` folder has the BSR 2026 (Civil) rate libraries for Thimphu, Phuentsholing, Gelephu and Samdrup Jongkhar. Download one and load it in ProCOST with **⋮ → Load library**.
+The `libraries` folder has the BSR 2026 (Civil) rate libraries for Thimphu, Phuentsholing, Gelephu and Samdrup Jongkhar. Download one and load it in COSTRON with **⋮ → Load library**.
 
 ## Samples
-The `samples` folder has two sample projects (`.pcp`). Download one and open it in ProCOST.
+The `samples` folder has two sample projects (`.pcp`). Download one and open it in COSTRON.
 
 ## Files
 | File | Purpose |
 |---|---|
-| `index.html` | The whole ProCOST web app (single file) |
+| `index.html` | The whole COSTRON web app (single file) |
 | `icon.png` | Browser tab icon |
 | `libraries/*.pcl` | BSR 2026 rate libraries |
 | `samples/*.pcp` | Sample projects |
+| `privacy.html`, `terms.html` | Privacy policy and terms (needed to publish the Google sign-in) – put your email in both |
+| `LOGIN-SETUP.md` | Turn on the sign-in page (email + password + forgot password) |
 | `config.js` | Dropbox / Google / Microsoft client IDs for cloud sign-in |
 | `CLOUD-SETUP.md` | How to get those IDs |
-| `SERVER-SETUP.md` | Connect to Nextcloud / WebDAV and host ProCOST on your server |
+| `SERVER-SETUP.md` | Connect to Nextcloud / WebDAV and host COSTRON on your server |
 | `.nojekyll` | Tells GitHub Pages to serve the files as they are |
 
 The app loads jsPDF, jsPDF-AutoTable and JSZip from cdnjs.cloudflare.com, so an internet connection is needed for PDF and Excel features.
