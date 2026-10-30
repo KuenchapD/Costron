@@ -22,6 +22,6 @@ window.PROCOST_AUTH = {
   allowSignup: true,       // false = only accounts you add in Firebase can sign in
   requireVerified: false,  // true = users must confirm their email before using COSTRON
   continueUrl: ''          // optional: your site address, e.g. https://YOU.github.io/procost/
-     approval: true,
+  approval: true,
   admins: ['kuenchapdhendup.btn@gmail.com']
 };
