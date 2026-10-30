@@ -16,12 +16,13 @@ window.PROCOST_CLOUD = {
    Leave apiKey empty to open COSTRON without a sign-in page. */
 window.PROCOST_AUTH = {
   apiKey:     'AIzaSyB4SOIK0LFjfcUhVoQk_Ds6vUkDYXue3_U',
-  authDomain: 'project-1edd06bd-5686-4d0a-81d.firebaseapp.com',          // e.g. procost-xxxx.firebaseapp.com
+  authDomain: 'project-1edd06bd-5686-4d0a-81d.firebaseapp.com',
   projectId:  'project-1edd06bd-5686-4d0a-81d',
   appId:      '1:640006574785:web:5ba1a60e4332e276d2fa40',
-  allowSignup: true,       // false = only accounts you add in Firebase can sign in
-  requireVerified: false,  // true = users must confirm their email before using COSTRON
-  continueUrl: '',          // optional: your site address, e.g. https://YOU.github.io/procost/
+  allowSignup: true,
+  requireVerified: false,
+  continueUrl: '',
   approval: true,
-  admins: ['kuenchapdhendup.btn@gmail.com'] 
+  admins: ['kuenchapdhendup.btn@gmail.com']
+     
 };
