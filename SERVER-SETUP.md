@@ -16,7 +16,7 @@ COSTRON can open and save project files (`.pcp`) and rate libraries (`.pcl`) dir
    * **Server address:** `https://cloud.example.com` (the address you use to open Nextcloud)
    * **User name:** your Nextcloud user name
    * **App password:** the password from step 1
-   * **Folder:** `COSTRON`. It is created for you, and you can browse to any other folder.
+   * **Folder:** `Costron`. It is created for you, and you can browse to any other folder.
 4. Click **Connect**.
 
 For another type of WebDAV server, choose **Other WebDAV** and enter the full folder URL, for example `https://nas.example.com:5006/home/procost/`.
@@ -79,7 +79,7 @@ If the connection fails with "Could not reach the server", one of these is neede
 
 ## 4. Files on your computer too
 
-Install the **Nextcloud desktop sync client** and sync the `COSTRON` folder. Your `.pcp` files then also appear in a normal folder on your computer, and you can open them with the COSTRON desktop app (**File → Open**) even offline. Nextcloud syncs the changes back.
+Install the **Nextcloud desktop sync client** and sync the `Costron` folder. Your `.pcp` files then also appear in a normal folder on your computer, and you can open them with the COSTRON desktop app (**File → Open**) even offline. Nextcloud syncs the changes back.
 
 ---
 
