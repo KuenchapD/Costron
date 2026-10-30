@@ -3242,9 +3242,9 @@ const V={
 function clean(){try{const u=new URL(location.href);['mode','oobCode','apiKey','lang','continueUrl'].forEach(k=>u.searchParams.delete(k));history.replaceState(null,'',u.pathname+(u.search||'')+u.hash)}catch(e){}}
 
 async function pend(){try{const q=await fs_().collection(COL).where('status','==','pending').get();const n=q.size,e=$('mi_upn');if(e)e.textContent=n?'('+n+' waiting)':'';if(n&&!pend.told){pend.told=1;$('msg').textContent=n+' user'+(n==1?' is':'s are')+' waiting for approval – ⋮ → Users.'}}catch(e){}}
-async function usersDlg(){let o=$('usrdlg');if(o)o.remove();o=document.createElement('div');o.id='usrdlg';o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:95;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto';
+async function usersDlg(){let o=$('usrdlg');if(o)o.remove();o=document.createElement('div');o.id='usrdlg';o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150500;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto';
  o.innerHTML='<div class="c" style="max-width:820px;width:100%;margin:0"><h2 style="margin-top:0">👥 Users <span class="row" style="margin:0"><select id="usf" style="width:auto"><option value="pending">Waiting for approval</option><option value="approved">Approved</option><option value="blocked">Blocked</option><option value="">All</option></select><button class="sm" id="usr">↻</button><button class="sm" id="usx">✕ Close</button></span></h2><div id="usl"><p class="n">Loading…</p></div><p class="n" style="margin:8px 0 0">New accounts wait here until you approve them. Blocking stops an account from opening COSTRON; to delete an account completely use Firebase console → Authentication → Users.</p></div>';
- document.body.appendChild(o);const q=s=>o.querySelector(s);q('#usx').onclick=()=>o.remove();q('#usr').onclick=draw;q('#usf').onchange=draw;
+ document.body.appendChild(o);const q=s=>o.querySelector(s);q('#usx').onclick=()=>{o.remove();try{pcStartAdm()}catch(e){}};q('#usr').onclick=draw;q('#usf').onchange=draw;
  const fmt=t=>{try{const d=t&&t.toDate?t.toDate():null;return d?dmyS(d.toISOString().slice(0,10))+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'):''}catch(e){return''}};
  async function draw(){const f=q('#usf').value,box=q('#usl');box.innerHTML='<p class="n">Loading…</p>';let snap;try{snap=await (f?fs_().collection(COL).where('status','==',f):fs_().collection(COL)).get()}catch(e){box.innerHTML='<p style="color:#d92d20">'+E(e.code||e.message)+' – check the Firestore rules (LOGIN-SETUP.md).</p>';return}
   const L=snap.docs.map(d=>Object.assign({uid:d.id},d.data())).sort((a,b)=>((b.requested&&b.requested.seconds)||0)-((a.requested&&a.requested.seconds)||0));
@@ -3269,7 +3269,9 @@ V.wait=function(u,st){const adm=(A.admins||[])[0]||'';F().innerHTML=st=='blocked
 async function enter(u,skip){if((A.requireVerified||(A.approval&&isAdm(u)))&&!u.emailVerified){V.verify(u);return}
  if(A.approval&&!skip){F().innerHTML='<div class="n">Checking access…</div>';let r;try{r=await gate(u)}catch(e){F().innerHTML='<h2>Sign-in problem</h2><p class="sub">'+E(e.message||e)+'</p><div class="row2"><span></span><a id="plso">Sign out</a></div>';F().querySelector('#plso').onclick=()=>auth.signOut();return}if(r!='ok'){V.wait(u,r);return}}try{localStorage.setItem('pcLastEmail',u.email||'')}catch(e){}
  if(swapTo(u.uid)){try{window.__svT&&clearTimeout(window.__svT)}catch(e){}window.__noFlush=1;location.reload();return}
- L.style.transition='opacity .3s';L.style.opacity='0';setTimeout(()=>L.remove(),320);window.PC_USER={email:u.email,uid:u.uid};acct(u)}
+ L.style.transition='opacity .3s';L.style.opacity='0';setTimeout(()=>L.remove(),320);window.PC_USER={email:u.email,uid:u.uid};acct(u);
+ window.pcAdmin=A.approval&&isAdm(u)?{list:async st=>{const q=st?fs_().collection(COL).where('status','==',st):fs_().collection(COL);const sn=await q.get();return sn.docs.map(d=>Object.assign({uid:d.id},d.data()))},set:async(uid,st)=>{await fs_().collection(COL).doc(uid).update({status:st,decided:firebase.firestore.FieldValue.serverTimestamp(),by:auth.currentUser.email});pend()},all:()=>usersDlg()}:null;
+ try{window.pcStartAdm&&pcStartAdm()}catch(e){}}
 function acct(u){const m=$('mnu');if(!m)return;let d=$('mi_acct');if(!d){d=document.createElement('div');d.id='mi_acct';m.prepend(d)}d.innerHTML=`<div class="n" style="padding:8px 14px;font-size:12px">Signed in as <b>${E(u.email)}</b></div>${A.approval&&isAdm(u)?'<button class="mi" id="mi_users">👥 Users – approve access<span id="mi_upn" style="margin-left:6px;color:#d92d20;font-weight:700"></span></button>':''}<button class="mi" id="mi_out">🚪 Sign out</button><button class="mi" id="mi_pw">🔑 Change password</button>`;if($('mi_users')){$('mi_users').onclick=()=>{tm();usersDlg()};pend()}
  $('mi_out').onclick=async()=>{tm();const go=async()=>{try{if(typeof svFlush=='function')svFlush()}catch(e){}await auth.signOut();location.reload()};if(typeof webDirty=='function'&&webDirty()&&CLOUD&&CLOUD.cur){await clWrite(CLOUD.cur,false)}go()};
  $('mi_pw').onclick=async()=>{tm();try{await auth.sendPasswordResetEmail(u.email,A.continueUrl?{url:A.continueUrl}:undefined);$('msg').textContent='A password reset email has been sent to '+u.email+'.'}catch(x){$('msg').textContent=em(x)}}}
@@ -3311,8 +3313,8 @@ window.pcStart=function(fromApp){let o=$('pcstart');if(o)o.remove();o=document.c
    <button id="pscl" style="padding:16px;text-align:left;font-size:15px">☁ <b>Open from cloud</b><div class="n" style="margin-top:4px">Google Drive, Dropbox, OneDrive, Nextcloud</div></button></div>
   <div style="margin-top:18px;font-weight:600">Recent cloud files</div><div id="psrec" style="margin-top:6px;max-height:240px;overflow:auto">${R.length?R.map((r,i)=>`<button class="mi" data-r="${i}" style="border:1px solid var(--bd);border-radius:8px;margin-top:6px;padding:9px 12px;display:flex;align-items:center;gap:8px;width:100%"><span>📄</span><b style="flex:1;text-align:left">${E(r.name)}</b><span class="n">${E((PNM&&PNM[r.prov])||r.prov)} · ${ago(r.at)}</span></button>`).join(''):'<p class="n" style="margin:4px 0">Projects you open from or save to your cloud appear here.</p>'}</div>
   ${unsaved&&unsaved.name&&!fromApp?`<p class="n" style="margin:14px 0 0">Your last session had unsaved changes in <b>${E(unsaved.name)}</b> (${ago(unsaved.at)}). <a href="#" id="psrecov">Recover them</a></p>`:''}
-  <p class="n" id="psmsg" style="margin:10px 0 0;color:#d92d20"></p></div>`;
- document.body.appendChild(o);const q=s=>o.querySelector(s),msg=t=>{q('#psmsg').textContent=t||''};
+  <div id="psadm"></div><p class="n" id="psmsg" style="margin:10px 0 0;color:#d92d20"></p></div>`;
+ document.body.appendChild(o);const q=s=>o.querySelector(s),msg=t=>{q('#psmsg').textContent=t||''};try{pcStartAdm()}catch(e){}
  if(q('#psx'))q('#psx').onclick=()=>o.remove();
  /* actions from the start screen must not ask to save the old browser copy (unless opened from inside the app) */
  const fresh=()=>{if(!fromApp)try{WEB.base=unSnap()}catch(e){}};
@@ -3350,6 +3352,19 @@ setTimeout(()=>{try{qatDraw()}catch(e){}},900);
 
 /* download .pcp compressed */
 {const o=save;save=async function(name,data){try{if(typeof data=='string'&&(/\.pcp$/i.test(name)||/^procost-all-data-.*\.json$/i.test(name))){let j=null;try{j=JSON.parse(data)}catch(e){}if(j&&j.type!='shared'){try{if(typeof HT!='undefined'&&HT){clearTimeout(HT);hCommit()}}catch(e){}if(!j.hist&&Array.isArray(S.hist))j.hist=S.hist;}if(j&&j.type!='shared')data=new Blob([await pcPack(JSON.stringify(j))],{type:'application/octet-stream'})}}catch(e){}return o.call(this,name,data)}}
+
+/* start screen: user approvals for the admin */
+window.pcStartAdm=async function(){const box=document.getElementById('psadm');if(!box)return;const A_=window.pcAdmin;if(!A_){box.innerHTML='';return}
+ const E=x=>String(x??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+ box.innerHTML='<div style="margin-top:18px;display:flex;align-items:center;gap:8px"><b>👥 User access</b><span class="n" id="psan"></span><span style="flex:1"></span><button class="sm" id="psaall">All users…</button></div><div id="psal" style="margin-top:6px"><p class="n" style="margin:4px 0">Loading…</p></div>';
+ box.querySelector('#psaall').onclick=()=>A_.all();
+ let L=[];try{L=await A_.list('pending')}catch(e){box.querySelector('#psal').innerHTML='<p class="n" style="color:#d92d20;margin:4px 0">Could not load users ('+E(e.code||e.message)+') – check the Firestore database and rules.</p>';return}
+ L.sort((a,b)=>((b.requested&&b.requested.seconds)||0)-((a.requested&&a.requested.seconds)||0));
+ box.querySelector('#psan').textContent=L.length?L.length+' waiting for approval':'';
+ const ago=t=>{const s=t&&t.seconds;if(!s)return'';const d=(Date.now()/1000-s)/86400;return d<1/24?'just now':d<1?Math.round(d*24)+' h ago':Math.floor(d)+' days ago'};
+ box.querySelector('#psal').innerHTML=L.length?'<div style="max-height:220px;overflow:auto">'+L.map((x,i)=>'<div style="display:flex;align-items:center;gap:8px;border:1px solid var(--bd);border-left:3px solid #f79009;border-radius:8px;padding:8px 10px;margin-top:6px"><span>👤</span><b style="flex:1;word-break:break-all">'+E(x.email)+'</b><span class="n">'+ago(x.requested)+'</span><button class="sm p" data-ok="'+i+'">✓ Approve</button><button class="sm" data-no="'+i+'">Block</button></div>').join('')+'</div>':'<p class="n" style="margin:4px 0">Nobody is waiting for approval.</p>';
+ const act=async(i,st,b)=>{b.disabled=true;try{await A_.set(L[i].uid,st);const m=document.getElementById('psmsg');if(m){m.style.color='#067647';m.textContent=L[i].email+(st=='approved'?' approved.':' blocked.')}pcStartAdm()}catch(e){b.disabled=false;const m=document.getElementById('psmsg');if(m){m.style.color='#d92d20';m.textContent='Could not update: '+(e.code||e.message)}}};
+ box.querySelectorAll('[data-ok]').forEach(b=>b.onclick=()=>act(+b.dataset.ok,'approved',b));box.querySelectorAll('[data-no]').forEach(b=>b.onclick=()=>act(+b.dataset.no,'blocked',b))};
 
 /* first render after every module has loaded (avoids rendering the full rate table with the old renderer) */
 if(window.__boot0){window.__boot0=0;try{tab(0)}catch(e){console.error(e)}}
